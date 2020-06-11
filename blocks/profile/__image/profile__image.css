@@ -1,0 +1,13 @@
+.profile__image {
+  max-width: 120px;
+  width: 100%;
+  object-fit: cover;
+  margin-right: 30px;
+  border-radius: 50%;
+}
+
+@media screen and (max-width: 850px){
+  .profile__image {
+    margin: 0px auto 14px;
+  }
+}

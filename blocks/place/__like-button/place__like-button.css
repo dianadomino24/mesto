@@ -1,0 +1,9 @@
+.place__like-button {
+    background-image: url('../../../images/like-button.svg');
+    object-fit: contain;
+    width: 21px;
+    height: 18px;
+    margin-right: 22px;
+    border: none;
+    background-color: #ffffff;
+}

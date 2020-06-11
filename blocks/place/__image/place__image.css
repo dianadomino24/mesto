@@ -1,0 +1,9 @@
+.place__image {
+  width: 100%;
+  max-height: 282px;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 25px;
+  /* object-position: center; */
+
+}
