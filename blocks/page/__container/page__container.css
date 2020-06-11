@@ -9,11 +9,11 @@
 }
 @media screen and (max-width: 1110px) {
   .page__container {
-    padding: 40px 50px 40px;
+    padding: 40px 70px 40px;
   }
 }
 
-@media screen and (max-width: 380px) {
+@media screen and (max-width: 500px) {
   .page__container {
     padding: 28px 19px 36px;
   }
