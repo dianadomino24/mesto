@@ -1,5 +1,5 @@
 .page__container {
-  min-width: 320px;
+  min-width: 282px;
   max-width: 882px;
   min-height: 100vh;
   display: flex;
@@ -7,7 +7,7 @@
   margin: 0 auto;
   padding: 45px 199px 60px;
 }
-@media screen and (max-width: 1110px) {
+@media screen and (max-width: 1170px) {
   .page__container {
     padding: 40px 70px 40px;
   }

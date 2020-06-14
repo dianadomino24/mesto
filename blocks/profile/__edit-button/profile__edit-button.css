@@ -2,11 +2,13 @@
     border: 1px solid white;
     width: 24px;
     height: 24px;
+    background: none;
     background-image: url('../../../images/edit-button.svg');
-    background-color: #2A2C2F;
     background-repeat: no-repeat;
     background-position: center;
     background-size: 10px;
+    box-shadow: none;
+    outline: none;
 }
 @media screen and (max-width: 750px) {
     .profile__edit-button {

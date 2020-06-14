@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title></title>
+  <title>Mesto</title>
   <link rel="stylesheet" href="./pages/index.css">
   <meta name="description" content="проект 'Mesto' Дианы Власенковой на Яндекс Практикуме">
   <meta name="keywords" content="html, css, javascript">
@@ -22,13 +22,11 @@
     <section class="profile section">
       <img src="./images/Avatar.jpg" alt="Фото профиля Жак-Ив Кусто" class="profile__image">
       <div class="profile__info">
-        <h1 class="profile__name">
-          Жак-Ив Кусто
-        </h1>
-        <button class="link profile__edit-button"></button>
-        <p class="profile__job">
-          Исследователь океана
-        </p>
+        <div class="profile__name-wrap">
+          <h1 class="profile__input profile__name">Жак-Ив Кусто</h1>
+          <button class="link profile__edit-button"></button>
+        </div>
+        <p class=" profile__input profile__job">Исследователь океана</p>
       </div>
       <button class="link profile__add-button"></button>
     </section>
@@ -38,42 +36,42 @@
         <h2 class="place__name">
           Карачаевск
         </h2>
-        <button class="link place__like-button"></button>
+        <button class="place__like-button"></button>
+      </figure>
+      <figure class="place">
+        <img src="./images/elbrus.jpg" alt="Фото карточки" class="place__image">
+        <h2 class="place__name">
+          Кременчуг-Константиновское
+        </h2>
+        <button class="place__like-button"></button>
+      </figure>
+      <figure class="place">
+        <img src="./images/dombai.jpg" alt="Фото карточки" class="place__image">
+        <h2 class="place__name">
+          Домбай
+        </h2>
+        <button class="place__like-button"></button>
+      </figure>
+      <figure class="place">
+        <img src="./images/elbrus.jpg" alt="Фото карточки" class="place__image">
+        <h2 class="place__name">
+          Гора Эльбрус
+        </h2>
+        <button class="place__like-button"></button>
+      </figure>
+      <figure class="place">
+        <img src="./images/dombai.jpg" alt="Фото карточки" class="place__image">
+        <h2 class="place__name">
+          Домбай
+        </h2>
+        <button class="place__like-button"></button>
       </figure>
       <figure class="place">
         <img src="./images/karachaevsk.jpg" alt="Фото карточки" class="place__image">
         <h2 class="place__name">
-          Карачаевск
+          Карачаево-Черкессия
         </h2>
-        <button class="link place__like-button"></button>
-      </figure>
-      <figure class="place">
-        <img src="./images/karachaevsk.jpg" alt="Фото карточки" class="place__image">
-        <h2 class="place__name">
-          Карачаевск
-        </h2>
-        <button class="link place__like-button"></button>
-      </figure>
-      <figure class="place">
-        <img src="./images/karachaevsk.jpg" alt="Фото карточки" class="place__image">
-        <h2 class="place__name">
-          Карачаевск
-        </h2>
-        <button class="link place__like-button"></button>
-      </figure>
-      <figure class="place">
-        <img src="./images/karachaevsk.jpg" alt="Фото карточки" class="place__image">
-        <h2 class="place__name">
-          Карачаевск
-        </h2>
-        <button class="link place__like-button"></button>
-      </figure>
-      <figure class="place">
-        <img src="./images/karachaevsk.jpg" alt="Фото карточки" class="place__image">
-        <h2 class="place__name">
-          Карачаевск
-        </h2>
-        <button class="link place__like-button"></button>
+        <button class="place__like-button"></button>
       </figure>
     </section>
   </main>
@@ -82,6 +80,20 @@
       &copy; 2020 Mesto Russia
     </p>
   </footer>
+  <section class="popup">
+    <div class="popup__container"> 
+      <button class="link popup__close-button"></button>
+      <form class="popup__form"> 
+        <h2 class="popup__title">Редактировать профиль</h2>
+        <fieldset class="popup__fieldset">
+          <input type="text" name="profile-name" placeholder="Имя" id="profile-name" class="input popup__input popup__input_type_name">
+          <input type="text" name="profile-job" id="profile-job" placeholder="Род деятельности" class="input popup__input popup__input_type_job">
+          <button class="link popup__save-button" type="submit">Сохранить</button>
+        </fieldset>
+      </form>
+    </div>
+  </section>
 </div>
+<script src="./scripts/index.js"></script>
 </body>
 </html>
