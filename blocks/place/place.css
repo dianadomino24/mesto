@@ -13,15 +13,3 @@
   overflow: hidden;    /* чтобы убрать белые уголки от border-radius */
   box-sizing: border-box;
 }
-/* 
-@media screen and (max-width: 1140px){
-  .place {
-
-  }
-}
-
-@media screen and (max-width: 640px){
-  .place {
-    
-  }
-} */
