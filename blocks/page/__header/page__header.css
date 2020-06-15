@@ -1,5 +1,5 @@
+/* задает внешнюю геометрию секции */
 .page__header {
-  width: 100%;
   margin: 0 auto 40px;
   padding-bottom: 40px;
 }

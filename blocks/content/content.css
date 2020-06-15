@@ -1,8 +1,6 @@
-@import url('./__section/content__section.css');
-
+/* задает внутр геометрию секции */
 .content {
   display: flex;
   flex-direction: column;
   margin: 0 auto;
-  
 }

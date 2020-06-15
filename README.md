@@ -13,6 +13,7 @@
 * [Ссылка на макет в Figma](https://www.figma.com/file/StZjf8HnoeLdiXS7dYrLAh/JavaScript.-Sprint-4)
 
 **Ссылка на GitPages**
+
 [Ссылка на сайт в GitPages](https://dianadomino24.github.io/mesto/)
 
 **Технологии**
@@ -25,6 +26,7 @@
 * Создана Nested файловая структура по БЭМ.
 
 **В перспективе**
+
 В перспективе необходимо доработать сайт: 
 
 * наладить отправку данных на сервер

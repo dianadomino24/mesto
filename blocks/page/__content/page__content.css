@@ -1,6 +1,6 @@
+/* задает внешнюю геометрию секции */
 .page__content {
   padding-bottom: 66px;
-}
 
 @media screen and (max-width: 568px) {
   .page__content {
