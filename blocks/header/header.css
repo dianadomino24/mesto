@@ -12,8 +12,10 @@
 @media screen and (max-width: 500px) {
   .header{
     padding-bottom: 31.6px;
-    width: 130%; /* чтобы полоса была на всю ширину окна без padding */
+    width: 130%; /*чтобы полоса была на всю ширину 
+    окна без padding (overflow hidden для page-container 
+    против гориз.скролла */
     margin-left: -19px;
-    margin-right: 0;
+    margin-right: 0; 
   }
 }
