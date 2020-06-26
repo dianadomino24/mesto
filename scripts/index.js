@@ -1,32 +1,50 @@
-const popup = document.querySelector('.popup')
-const popupOpenButton = document.querySelector('.profile__edit-button')
-const popupCloseButton = popup.querySelector('.popup__close-button')
-const saveProfileButton = popup.querySelector('.popup__save-button')
+const popup = document.querySelectorAll('.popup')
+const popupProfileOpenButton = document.querySelector('.profile__edit-button')
+const popupCloseButton = document.querySelector('.popup__close-button')
+const saveProfileButton = document.querySelector('.popup__save-button')
 const profileName = document.querySelector('.profile__name')
 const profileJob = document.querySelector('.profile__job')
 const inputName = document.querySelector('.popup__input_type_name')
 const inputJob = document.querySelector('.popup__input_type_job')
 
+const popupTriggers = document.querySelectorAll('[data-popup-trigger]')
+
 // переключает класс попап
-const popupToggle = function () {
-    popup.classList.toggle('popup_opened')
+const popupToggle = function (currentPopup) {
+    console.log(currentPopup)
+    currentPopup.classList.toggle('popup_opened')
 }
 
-function cleanInputValues() {
-    inputName.value = ''
-    inputJob.value = ''
+const popupToggleFromEvent = function (event) {
+    console.log(event.target)
+    currentPopup = event.target.closest('.popup')
+    console.log(currentPopup)
+    popupToggle(currentPopup)
 }
 
-popupOpenButton.addEventListener('click', function() {
-    popupToggle()
-    inputName.value = profileName.textContent
-    inputJob.value = profileJob.textContent
-} )
+function cleanInputValues(currentPopup) {
+    let inputs = currentPopup.querySelectorAll('.input')
+    inputs.forEach( input => {input.value = ''})
+}
 
-popupCloseButton.addEventListener('click', function() {
-    popupToggle()
-    cleanInputValues()
-} )
+const cleanInputValuesFromEvent = function (event) {
+    console.log(event.target)
+    currentPopup = event.target.closest('.popup')
+    console.log(currentPopup)
+    cleanInputValues(currentPopup)
+}
+
+// popupOpenButton.addEventListener('click', function() {
+//     popupToggle()
+//     inputName.value = profileName.textContent
+//     inputJob.value = profileJob.textContent
+// } )
+
+
+// popupCloseButton.addEventListener('click', function() {
+//     popupToggle()
+//     cleanInputValues()
+// } )
 
 // закрывает попап при нажатии на фон
 // popup.addEventListener('click', function (event) {
@@ -36,14 +54,51 @@ popupCloseButton.addEventListener('click', function() {
 // })
 // либо
 const closePopupByClickingOverlay = function (event) {
+    console.log(event.target)
     if (event.target !== event.currentTarget) { return }
-    popupToggle()
-    cleanInputValues()
+    popupToggleFromEvent(event)
+    cleanInputValuesFromEvent(event)
 }
-popup.addEventListener('click', closePopupByClickingOverlay)
+// popup.addEventListener('click', closePopupByClickingOverlay)
 
 
-let formElement = document.querySelector('.popup__form')
+function addPopupListeners(currentPopup) {
+    console.log(currentPopup)
+    currentPopup.querySelector('.popup__close-button').addEventListener('click', popupToggleFromEvent);
+    currentPopup.addEventListener('click', closePopupByClickingOverlay);
+    // currentPopup.querySelector('.popup__save-button').addEventListener('click', formSubmitHandler);
+}
+  
+//   function deleteTodo(e) {
+//     const todo = e.target.closest('.todo');
+  
+//     todo.remove();
+//   }
+  
+//   function editTodo(e) {
+//     const todo = e.target.closest('.todo');
+  
+//     setTodotoForm(todo);
+//   }
+
+
+
+popupTriggers.forEach(el => el.addEventListener('click', function() {
+    let currentPopupValue = el.dataset.popupTrigger
+    console.log(currentPopupValue)
+    let currentPopup = document.querySelector(`[data-popup-name=${CSS.escape(currentPopupValue)}]`)
+    console.log(currentPopup)
+    popupToggle(currentPopup)
+    cleanInputValues(currentPopup)
+    addPopupListeners(currentPopup)
+})) 
+
+
+let formProfile = document.querySelector('.popup__form_type_profile')
+popupProfileOpenButton.addEventListener('click', function() {
+    inputName.value = profileName.textContent
+    inputJob.value = profileJob.textContent
+})
 
 // Обработчик «отправки» формы
 function formSubmitHandler (evt) {
@@ -55,12 +110,12 @@ function formSubmitHandler (evt) {
     if (inputJob.value !== inputJob.placeholder && inputJob.value.length > 0 && inputJob.value.trim() !== '') {
         profileJob.textContent = inputJob.value.trim()
     }
-    popupToggle()
+    popupToggleFromEvent(event)
 }
 
 // Прикрепляем обработчик к форме:
 // он будет следить за событием “submit” - «отправка»
-formElement.addEventListener('submit', formSubmitHandler);
+formProfile.addEventListener('submit', formSubmitHandler);
 
 
 
