@@ -6,19 +6,24 @@ const profileName = document.querySelector('.profile__name')
 const profileJob = document.querySelector('.profile__job')
 const inputName = document.querySelector('.popup__input_type_name')
 const inputJob = document.querySelector('.popup__input_type_job')
+let placesItems = document.querySelectorAll('.places__item')
 
-const popupTriggers = document.querySelectorAll('[data-popup-trigger]')
+let imgTriggers = document.querySelectorAll('[data-img-trigger]')
+const imgPopup = document.querySelector('.popup_type_picture-zoom')
+
+
+let popupTriggers = document.querySelectorAll('[data-popup-trigger]')
+console.log(popupTriggers)
+
+
 
 // переключает класс попап
 const popupToggle = function (currentPopup) {
-    console.log(currentPopup)
     currentPopup.classList.toggle('popup_opened')
 }
 
 const popupToggleFromEvent = function (event) {
-    console.log(event.target)
-    currentPopup = event.target.closest('.popup')
-    console.log(currentPopup)
+    let currentPopup = event.target.closest('.popup')
     popupToggle(currentPopup)
 }
 
@@ -28,70 +33,33 @@ function cleanInputValues(currentPopup) {
 }
 
 const cleanInputValuesFromEvent = function (event) {
-    console.log(event.target)
-    currentPopup = event.target.closest('.popup')
-    console.log(currentPopup)
+    let currentPopup = event.target.closest('.popup')
     cleanInputValues(currentPopup)
 }
 
-// popupOpenButton.addEventListener('click', function() {
-//     popupToggle()
-//     inputName.value = profileName.textContent
-//     inputJob.value = profileJob.textContent
-// } )
-
-
-// popupCloseButton.addEventListener('click', function() {
-//     popupToggle()
-//     cleanInputValues()
-// } )
-
-// закрывает попап при нажатии на фон
-// popup.addEventListener('click', function (event) {
-//     if (event.target.className == 'popup popup_opened') {
-//         popup.className = 'popup'
-//     }
-// })
-// либо
 const closePopupByClickingOverlay = function (event) {
-    console.log(event.target)
     if (event.target !== event.currentTarget) { return }
     popupToggleFromEvent(event)
     cleanInputValuesFromEvent(event)
 }
-// popup.addEventListener('click', closePopupByClickingOverlay)
-
 
 function addPopupListeners(currentPopup) {
-    console.log(currentPopup)
     currentPopup.querySelector('.popup__close-button').addEventListener('click', popupToggleFromEvent);
     currentPopup.addEventListener('click', closePopupByClickingOverlay);
-    // currentPopup.querySelector('.popup__save-button').addEventListener('click', formSubmitHandler);
 }
-  
-//   function deleteTodo(e) {
-//     const todo = e.target.closest('.todo');
-  
-//     todo.remove();
-//   }
-  
-//   function editTodo(e) {
-//     const todo = e.target.closest('.todo');
-  
-//     setTodotoForm(todo);
-//   }
 
+popupTriggers.forEach(trigger => trigger.addEventListener('click', openCurrentPopup))
 
-
-popupTriggers.forEach(el => el.addEventListener('click', function() {
-    let currentPopupValue = el.dataset.popupTrigger
-    console.log(currentPopupValue)
+function openCurrentPopup(evt) {
+    console.log(evt.target)
+    let currentTrigger = evt.target
+    let currentPopupValue = currentTrigger.dataset.popupTrigger
     let currentPopup = document.querySelector(`[data-popup-name=${CSS.escape(currentPopupValue)}]`)
-    console.log(currentPopup)
+
     popupToggle(currentPopup)
     cleanInputValues(currentPopup)
     addPopupListeners(currentPopup)
-})) 
+}
 
 
 let formProfile = document.querySelector('.popup__form_type_profile')
@@ -101,7 +69,7 @@ popupProfileOpenButton.addEventListener('click', function() {
 })
 
 // Обработчик «отправки» формы
-function formSubmitHandler (evt) {
+function profileFormSubmitHandler (evt) {
     evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
 
     if (inputName.value !== inputName.placeholder && inputName.value.length > 0 && inputName.value.trim() !== '') {
@@ -113,12 +81,155 @@ function formSubmitHandler (evt) {
     popupToggleFromEvent(event)
 }
 
-// Прикрепляем обработчик к форме:
-// он будет следить за событием “submit” - «отправка»
-formProfile.addEventListener('submit', formSubmitHandler);
+formProfile.addEventListener('submit', profileFormSubmitHandler);
 
 
 
+
+const initialCards = [
+    {
+        name: 'Архыз',
+        link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg'
+    },
+    {
+        name: 'Челябинская область',
+        link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg'
+    },
+    {
+        name: 'Иваново',
+        link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg'
+    },
+    {
+        name: 'Камчатка',
+        link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg'
+    },
+    {
+        name: 'Холмогорский район',
+        link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg'
+    },
+    {
+        name: 'Байкал',
+        link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg'
+    }
+];
+
+
+
+const placesList = document.querySelector('.places__list')
+const placeForm = document.querySelector('.popup__form_type_place')
+const placeInputName = placeForm.querySelector('.popup__input_type_place-name')
+const placeInputPic = placeForm.querySelector('.popup__input_type_place-pic')
+const placeTemplate = document.querySelector('.place-template')
+const emptyList = document.querySelector('.places__empty-list')
+
+function addPlace(placeName , placePic) {
+    const place = placeTemplate.content.cloneNode(true);
+
+    place.querySelector('.place__name').textContent = placeName
+    place.querySelector('.place__image').src = placePic
+
+    addPlaceListeners(place)
+    
+    placesList.prepend(place)
+    updatePlacesItems()
+    updateImgTriggers ()
+    
+}
+
+function addPlaceListeners(place) {
+    place.querySelector('.place__like-button').addEventListener('click', function(evt) {
+        evt.target.classList.toggle('place__like-button_active');
+    }) 
+    place.querySelector('.place__delete-button').addEventListener('click', deletePlace)
+}
+
+
+function deletePlace(e) {
+    const place = e.target.closest('.places__item');
+    console.log(place)
+    place.remove();
+    updatePlacesItems()
+    updateImgTriggers ();
+}
+
+
+//проверяет, есть ли в списке карточки, если нет, то делает видимой надпись о пустом списке
+function updatePlacesItems() {
+    placesItems = document.querySelectorAll('.places__item')
+    if (placesItems.length === 0) {
+        emptyList.classList.add('places__empty-list_visible')
+    } else {
+        emptyList.classList.remove('places__empty-list_visible')
+    }
+}
+
+
+
+
+placeForm.addEventListener('submit', placeFormSubmitHandler) 
+
+function placeFormSubmitHandler (evt) {
+    evt.preventDefault();
+
+    let placeName = placeInputName.value
+    let placePic = placeInputPic.value
+
+    //если не введена ссылка, то попап закроется. Если не введено название, оно заменится на "Название"
+    if (placePic.trim() === '') {
+        popupToggleFromEvent(event)
+        return
+    }
+    else if (placeName.trim() === '') {
+        placeName = "Название"
+    }
+    addPlace(placeName, placePic);
+    
+    placeInputName.value = '';
+    placeInputPic.value = '';
+    
+    popupToggleFromEvent(event)
+    // updateImgTriggers ()
+}
+
+initialCards.forEach(element => {
+    addPlace(element.name, element.link)
+}) 
+
+
+
+
+
+
+
+imgTriggers.forEach(trigger => trigger.addEventListener('click', openImgPopup))
+
+function openImgPopup(evt) {
+    let currentImgTrigger = evt.target
+
+    let imgName = currentImgTrigger.closest('.place').querySelector('.place__name').textContent
+    let imgSrc = currentImgTrigger.src
+    
+    imgPopup.querySelector('.picture-zoom__title').textContent = imgName
+    imgPopup.querySelector('.picture-zoom__img').src = imgSrc
+
+    popupToggle(imgPopup)
+    addPopupListeners(imgPopup)
+    
+}
+
+
+
+//обновляем массив карточек
+function updateImgTriggers () {
+    imgTriggers = document.querySelectorAll('[data-img-trigger]')
+    imgTriggers.forEach(trigger => trigger.addEventListener('click', openImgPopup))
+}
+
+
+
+// if (currentPopup.nodeName == 'TEMPLATE') {
+//     currentPopup = currentPopup.content
+// }
 
 
 // const inputs = document.querySelectorAll('.input')

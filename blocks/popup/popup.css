@@ -5,6 +5,9 @@
 @import url(__fieldset/popup__fieldset.css);
 @import url(__input/popup__input.css);
 @import url(__save-button/popup__save-button.css);
+@import url(__container-pic-zoom/popup__container-pic-zoom.css);
+
+/* @import url(_type/popup_type_picture-zoom.css);  */
 /* @import url(_opened/popup_opened.css); */
 
 .popup {
@@ -19,5 +22,8 @@
     color: #000000;
     font-family: 'Inter', Arial, sans-serif;
     box-sizing: border-box;
-    display: none;
+    display: flex;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility .4s linear , opacity .4s linear;
 }

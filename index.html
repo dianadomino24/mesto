@@ -32,74 +32,9 @@
     </section>
     <section class="places section">
       <ul class="places__list">
-        <li class="places__item">
-          <figure class="place">
-            <img src="./images/karachaevsk.jpg" alt="Фото карточки" class="place__image">
-            <div class="place__wrapper">
-              <h2 class="place__name">
-                Карачаевск
-              </h2>
-              <button class="place__like-button"></button>
-            </div>
-          </figure> 
-        </li>
-        <li class="places__item">
-          <figure class="place">
-            <img src="./images/elbrus.jpg" alt="Фото карточки" class="place__image">
-            <div class="place__wrapper">
-              <h2 class="place__name">
-                Кременчуг-Константиновское
-              </h2>
-              <button class="place__like-button"></button>
-            </div>
-          </figure> 
-        </li>
-        <li class="places__item">
-          <figure class="place">
-            <img src="./images/dombai.jpg" alt="Фото карточки" class="place__image">
-            <div class="place__wrapper">
-              <h2 class="place__name">
-                Домбай
-              </h2>
-              <button class="place__like-button"></button>
-            </div>
-          </figure> 
-        </li>
-        <li class="places__item">
-          <figure class="place">
-            <img src="./images/elbrus.jpg" alt="Фото карточки" class="place__image">
-            <div class="place__wrapper">
-              <h2 class="place__name">
-                Гора Эльбрус
-              </h2>
-              <button class="place__like-button"></button>
-            </div>
-          </figure> 
-        </li>
-        <li class="places__item">
-          <figure class="place">
-            <img src="./images/dombai.jpg" alt="Фото карточки" class="place__image">
-            <div class="place__wrapper">
-              <h2 class="place__name">
-                Домбай
-              </h2>
-              <button class="place__like-button"></button>
-            </div>
-          </figure> 
-        </li>
-        <li class="places__item">
-          <figure class="place">
-            <img src="./images/karachaevsk.jpg" alt="Фото карточки" class="place__image">
-            <div class="place__wrapper">
-              <h2 class="place__name">
-                Карачаево-Черкессия
-              </h2>
-              <button class="place__like-button"></button>
-            </div>
-          </figure> 
-        </li>
-    </ul>
-    </section>
+        <li class="places__empty-list">Нет добавленных мест</li>
+      </ul>
+      </section>
   </main>
   <footer class="footer section page__footer">
     <p class="footer__copyright">
@@ -114,7 +49,7 @@
         <fieldset class="popup__fieldset">
           <input type="text" name="profile-name" placeholder="Имя" id="profile-name" class="input popup__input popup__input_type_name">
           <input type="text" name="profile-job" id="profile-job" placeholder="Род деятельности" class="input popup__input popup__input_type_job">
-          <button class="link popup__save-button" type="submit">Сохранить</button>
+          <button class="link popup__save-button popup__save-button_type_profile" type="submit">Сохранить</button>
         </fieldset>
       </form>
     </div>
@@ -127,11 +62,37 @@
         <fieldset class="popup__fieldset">
           <input type="text" name="place-name" placeholder="Название" id="place-name" class="input popup__input popup__input_type_place-name">
           <input type="text" name="place-pic" id="place-pic" placeholder="Ссылка на картинку" class="input popup__input popup__input_type_place-pic">
-          <button class="link popup__save-button" type="submit">Создать</button>
+          <button class="link popup__save-button popup__save-button_type_place" type="submit">Создать</button>
         </fieldset>
       </form>
     </div>
   </section>
+  <section class="popup popup_type_picture-zoom" data-popup-img-name="popup_type_picture-zoom">
+    <div class="popup__container-pic-zoom"> 
+      <button class="link popup__close-button"></button>
+      <figure class="picture-zoom">
+        <img src=# alt="Фото карточки" class="picture-zoom__img">
+        <p class="picture-zoom__title"></p>
+      </figure>
+    </div>
+  </section>
+</div>
+<template class="place-template">
+  <li class="places__item">
+    <figure class="place">
+      <button class="link place__delete-button"></button>
+      <img src=# alt="Фото карточки" class="place__image" data-img-trigger="popup_type_picture-zoom">
+      <div class="place__wrapper">
+        <h2 class="place__name">
+          
+        </h2>
+        <button class="place__like-button"></button>
+      </div>
+    </figure> 
+  </li>
+</template>
+<div class="img-popups-container">
+  
 </div>
 <script src="./scripts/index.js"></script>
 </body>
