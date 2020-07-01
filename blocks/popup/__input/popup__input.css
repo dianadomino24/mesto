@@ -12,7 +12,7 @@
     margin-bottom: 0;
 }
 .popup__input::placeholder {
-    color: #000000;
+    color: ##C4C4C4;;
 }
 .popup__input[type='text']:focus {
     outline: 3px solid #6596F9;

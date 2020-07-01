@@ -1,3 +1,5 @@
+// import { initialCards } from "./utils";
+
 const popup = document.querySelectorAll('.popup')
 const popupProfileOpenButton = document.querySelector('.profile__edit-button')
 const popupCloseButton = document.querySelector('.popup__close-button')
@@ -19,6 +21,7 @@ const placeInputPic = placeForm.querySelector('.popup__input_type_place-pic')
 const placeTemplate = document.querySelector('.place-template')
 const emptyList = document.querySelector('.places__empty-list')
 
+//не разобралась, как сделать импорт utils. надеюсь, в следующ.спринте реализую:)
 const initialCards = [
     {
         name: 'Архыз',
@@ -51,6 +54,7 @@ const initialCards = [
 const popupToggle = function (currentPopup) {
     currentPopup.classList.toggle('popup_opened')
 }
+
 //по событию вычисляет у какого попапа переключить класс
 const popupToggleFromEvent = function (event) {
     let currentPopup = event.target.closest('.popup')
@@ -147,7 +151,7 @@ function deletePlace(e) {
     updateImgTriggers ();
 }
 
-// добавляет карточку
+// добавляет карточку, ставит ей прослушки и обновляет массивы с карточками и изобр.-триггерами
 function addPlace(placeName , placePic) {
     const place = placeTemplate.content.cloneNode(true);
 
@@ -168,12 +172,8 @@ function placeFormSubmitHandler (evt) {
     let placeName = placeInputName.value
     let placePic = placeInputPic.value
 
-    // если не введена ссылка, то попап закроется. Если не введено название, оно заменится на "Название"
-    if (placePic.trim() === '') {
-        popupToggleFromEvent(event)
-        return
-    }
-    else if (placeName.trim() === '') {
+    // если не введено название, оно заменится на "Название"
+    if (placeName.trim() === '') {
         placeName = "Название"
     }
     addPlace(placeName, placePic);
@@ -206,36 +206,3 @@ function openImgPopup(evt) {
 }
 
 imgTriggers.forEach(trigger => trigger.addEventListener('click', openImgPopup))
-
-
-
-
-// const inputs = document.querySelectorAll('.input')
-// сохраняет values для всех inputs по порядку html
-// const profileInputs = document.querySelectorAll('.profile__input')
-// const saveProfileChanges = function() {
-//     for (let i = 0; i < inputs.length; i++) {
-//         let input = inputs[i]
-//         if (input.value !== input.placeholder && input.value.length > 0 && input.value.trim() !== '') {
-//             profileInputs[i].textContent = input.value
-//             input.placeholder = input.value
-//         }
-//         input.value = ''
-//     }
-//     popupToggle()
-// }
-
-// //если бы надо было заменять placeholder и обнулять value 
-// const saveProfileChanges = function() {
-//     if (inputName.value !== inputName.placeholder && inputName.value.length > 0 && inputName.value.trim() !== '') {
-//         profileName.textContent = inputName.value
-//         inputName.placeholder = inputName.value
-//     }
-//     if (inputJob.value !== inputJob.placeholder && inputJob.value.length > 0 && inputJob.value.trim() !== '') {
-//         profileJob.textContent = inputJob.value
-//         inputJob.placeholder = inputJob.value
-//     }
-//     popupToggle()
-//     cleanInputValues()
-// }
-
