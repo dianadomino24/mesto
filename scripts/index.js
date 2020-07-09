@@ -8,7 +8,7 @@ const profileJob = document.querySelector('.profile__job')
 const inputName = document.querySelector('.popup__input_type_name')
 const inputJob = document.querySelector('.popup__input_type_job')
 
-
+let currentPopupBox = null
 
 let placesItems = document.querySelectorAll('.places__item')
 let imgTriggers = document.querySelectorAll('[data-img-trigger]')
@@ -55,6 +55,9 @@ const initialCards = [
 // переключает класс попап
 const popupToggle = function (currentPopup) {
     currentPopup.classList.toggle('popup_opened')
+    if (!currentPopupBox.classList.contains('popup_opened')) {
+        currentPopupBox = null
+    }
 }
 
 //по событию вычисляет у какого попапа переключить класс
@@ -75,22 +78,22 @@ const cleanInputValuesFromEvent = function (event) {
 //закрывает попап при нажатии на фон
 const closePopupByClickingOverlay = function (event) {
     if (event.target !== event.currentTarget) { return }
+    
+    // popupToggle(currentPopupBox)
+    // cleanInputValues(currentPopupBox)
+
     popupToggleFromEvent(event)
     cleanInputValuesFromEvent(event)
 }
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 //закроет попап при нажатии на Esc
 function keyHandler(evt) {
-    console.log(evt)
-    console.log(evt.key)
-    if (evt.key === 'Escape'){
-        popupToggleFromEvent(evt)
+    if (evt.key === 'Escape' && currentPopupBox != null ){
+        popupToggle(currentPopupBox)
     }
 }
 
 document.addEventListener('keydown', keyHandler)
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
 
 //прослушки для закрытия текущего попапа
 function addPopupListeners(currentPopup) {
@@ -102,6 +105,8 @@ function openCurrentPopup(evt) {
     let currentTrigger = evt.target
     let currentPopupValue = currentTrigger.dataset.popupTrigger
     let currentPopup = document.querySelector(`[data-popup-name=${CSS.escape(currentPopupValue)}]`)
+
+    currentPopupBox = currentPopup
 
     popupToggle(currentPopup)
     cleanInputValues(currentPopup)
@@ -216,6 +221,8 @@ function openImgPopup(evt) {
     
     imgPopup.querySelector('.picture-zoom__title').textContent = imgName
     imgPopup.querySelector('.picture-zoom__img').src = imgSrc
+
+    currentPopupBox = imgPopup
 
     popupToggle(imgPopup)
     addPopupListeners(imgPopup)
