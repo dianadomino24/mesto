@@ -8,6 +8,8 @@ const profileJob = document.querySelector('.profile__job')
 const inputName = document.querySelector('.popup__input_type_name')
 const inputJob = document.querySelector('.popup__input_type_job')
 
+
+
 let placesItems = document.querySelectorAll('.places__item')
 let imgTriggers = document.querySelectorAll('[data-img-trigger]')
 const imgPopup = document.querySelector('.popup_type_picture-zoom')
@@ -76,6 +78,20 @@ const closePopupByClickingOverlay = function (event) {
     popupToggleFromEvent(event)
     cleanInputValuesFromEvent(event)
 }
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//закроет попап при нажатии на Esc
+function keyHandler(evt) {
+    console.log(evt)
+    console.log(evt.key)
+    if (evt.key === 'Escape'){
+        popupToggleFromEvent(evt)
+    }
+}
+
+document.addEventListener('keydown', keyHandler)
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+
 //прослушки для закрытия текущего попапа
 function addPopupListeners(currentPopup) {
     currentPopup.querySelector('.popup__close-button').addEventListener('click', popupToggleFromEvent);
@@ -206,3 +222,6 @@ function openImgPopup(evt) {
 }
 
 imgTriggers.forEach(trigger => trigger.addEventListener('click', openImgPopup))
+
+
+
