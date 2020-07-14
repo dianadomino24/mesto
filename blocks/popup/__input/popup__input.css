@@ -3,17 +3,21 @@
     line-height: 1.2;
     border: none;
     border-bottom: 1px solid rgba(0, 0, 0, .2);
-    padding: 13.2px 0 13.2px 5px;
+    padding: 10px 0 10px 5px;
     width: 100%;
-    margin-bottom: 30px;
+    margin-bottom: 35px;
     
 }
-.popup__input:last-of-type {
-    margin-bottom: 0;
-}
+
 .popup__input::placeholder {
-    color: ##C4C4C4;;
+    color: #C4C4C4;;
 }
-.popup__input[type='text']:focus {
+.popup__input:focus {
     outline: 3px solid #6596F9;
+}
+
+@media screen and (max-width: 370px) {
+    .popup__input {
+        margin-bottom: 46px;
+    }
 }

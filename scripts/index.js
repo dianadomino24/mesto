@@ -1,4 +1,5 @@
-// import { initialCards } from "./utils";
+// import {enableValidation} from './validate.js';
+// import { initialCards } from "./utils.js";
 
 const popup = document.querySelectorAll('.popup')
 const popupProfileOpenButton = document.querySelector('.profile__edit-button')
@@ -22,6 +23,8 @@ const placeInputName = placeForm.querySelector('.popup__input_type_place-name')
 const placeInputPic = placeForm.querySelector('.popup__input_type_place-pic')
 const placeTemplate = document.querySelector('.place-template')
 const emptyList = document.querySelector('.places__empty-list')
+
+const inputErrors = document.querySelectorAll('.popup__input-error')
 
 //не разобралась, как сделать импорт utils. надеюсь, в следующ.спринте реализую:)
 const initialCards = [
@@ -82,13 +85,19 @@ function keyHandler(evt) {
         popupToggle()
     }
 }
-//прослушка для кнопок, чтоб закрыть при Esc
-document.addEventListener('keydown', keyHandler)
+
+//скрывает уведомления об ошибках в инпутах
+function cleanInputErrors() {
+    inputErrors.forEach(error => error.classList.remove('popup__input-error_active'))
+}
+
 
 //прослушки для закрытия текущего попапа
 function addPopupListeners(currentPopupBox) {
     currentPopupBox.querySelector('.popup__close-button').addEventListener('click', popupToggle);
     currentPopupBox.addEventListener('click', closePopupByClickingOverlay);
+    //прослушка для кнопок, чтоб закрыть при Esc
+    document.addEventListener('keydown', keyHandler)
 }
 //открывает текущий попап, ставит прослушки и очищает input values
 function openCurrentPopup(evt) {
@@ -99,7 +108,28 @@ function openCurrentPopup(evt) {
     currentPopupBox = currentPopup
     
     cleanInputValues()
+    cleanInputErrors()
+
+
     popupToggle()
+
+    // enableValidation({
+    //     formSelector: '.popup__form',
+    //     inputSelector: '.popup__input',
+    //     submitButtonSelector: '.popup__save-button',
+    //     inactiveButtonClass: 'popup__save-button_disabled',
+    //     inputErrorClass: '.popup__input-error',
+    //     errorActiveClass: 'popup__input-error_active',
+    //     controlSelector: '.popup__label',
+    // });
+    
+
+    if (currentPopupBox.classList.contains('popup_type_edit-profile')) {
+        currentPopupBox.querySelector('.popup__save-button').classList.remove('popup__save-button_disabled')
+    }
+
+
+
     addPopupListeners(currentPopupBox)
 }
 //при клике на триггер запускает открытие соответствующего триггеру попапа
@@ -107,24 +137,25 @@ popupTriggers.forEach(trigger => trigger.addEventListener('click', openCurrentPo
 
 
 let formProfile = document.querySelector('.popup__form_type_profile')
+
 //при открытии попапа редактирования профиля заполняет values инпутов данными из профиля
 popupProfileOpenButton.addEventListener('click', function() {
     inputName.value = profileName.textContent
     inputJob.value = profileJob.textContent
 })
+// if (currentPopupBox.classList.contains('popup_type_edit-profile')) {
+//     inputName.value = profileName.textContent
+//     inputJob.value = profileJob.textContent
+// }
 
 
 function profileFormSubmitHandler (evt) {
     evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
 
-    // если в инпуты ничего не введено(или пробелы), то просто закроем попап без сохранения values
     // если введены values с пробелами, то обрежем лишние пробелы
-    if (inputName.value.trim() !== '') {
-        profileName.textContent = inputName.value.trim()
-    }
-    if (inputJob.value.trim() !== '') {
-        profileJob.textContent = inputJob.value.trim()
-    }
+    profileName.textContent = inputName.value.trim()
+    profileJob.textContent = inputJob.value.trim()
+
     popupToggle()
 }
 // Обработчик «отправки» формы
@@ -185,21 +216,18 @@ function placeFormSubmitHandler (evt) {
     let placeName = placeInputName.value
     let placePic = placeInputPic.value
 
-    // если не введено название, оно заменится на "Название"
-    if (placeName.trim() === '') {
-        placeName = "Название"
-    }
     addPlace(placeName, placePic);
     
     placeInputName.value = '';
     placeInputPic.value = '';
 
-    console.log(currentPopupBox)
     popupToggle()
-    console.log(currentPopupBox)
 }
 
 placeForm.addEventListener('submit', placeFormSubmitHandler) 
+
+// export {placeFormSubmitHandler}
+// export {profileFormSubmitHandler}
 
 // добавит начальные карточки из массива
 initialCards.forEach(element => {
@@ -226,6 +254,31 @@ imgTriggers.forEach(trigger => trigger.addEventListener('click', openImgPopup))
 
 
 
+
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+// function toggleSaveButtonState (currentPopupBox) {
+//     if (currentPopupBox) {
+//         let formElement = currentPopupBox.querySelector('.popup__form')
+//         if (formElement) {
+//             let buttonElement = formElement.querySelector('.popup__save-button')
+//             let inactiveButtonClass =  'popup__save-button_disabled'
+
+//             toggleButtonState(formElement, buttonElement, inactiveButtonClass)
+//         }
+//     }
+// }
+
+// function toggleButtonState(formElement, buttonElement, inactiveButtonClass) {
+//     if (!formElement.checkValidity()) {
+//         buttonElement.classList.add(inactiveButtonClass)
+//     } else {
+//         buttonElement.classList.remove(inactiveButtonClass)
+//     }
+// }
 
 /*  
 // import { initialCards } from "./utils";

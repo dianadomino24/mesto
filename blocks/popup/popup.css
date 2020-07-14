@@ -5,8 +5,11 @@
 @import url(__fieldset/popup__fieldset.css);
 @import url(__input/popup__input.css);
 @import url(__save-button/popup__save-button.css);
+@import url(__save-button/_disabled/popup__save-button_disabled.css);
 @import url(__container-pic-zoom/popup__container-pic-zoom.css);
-
+@import url(__label/popup__label.css);
+@import url(__input-error/popup__input-error.css);
+@import url(__input-error/_active/popup__input-error_active.css);
 /* @import url(_type/popup_type_picture-zoom.css);  */
 /* @import url(_opened/popup_opened.css); */
 
@@ -26,4 +29,5 @@
     visibility: hidden;
     opacity: 0;
     transition: visibility .4s linear , opacity .4s linear;
+
 }
