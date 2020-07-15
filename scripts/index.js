@@ -151,8 +151,15 @@ function profileFormSubmitHandler (evt) {
 
     popupToggle()
 }
-// Обработчик «отправки» формы
-formProfile.addEventListener('submit', profileFormSubmitHandler);
+// обработчик сабмита не позволит сохранить невалидную форму по нажатию Enter
+formProfile.addEventListener('submit', function(evt) {
+    if (formProfile.checkValidity()) {
+        profileFormSubmitHandler(evt)
+        return
+    }
+    evt.preventDefault()
+}
+);
 
 
 // удаляет карточку
@@ -217,7 +224,14 @@ function placeFormSubmitHandler (evt) {
     popupToggle()
 }
 
-placeForm.addEventListener('submit', placeFormSubmitHandler) 
+//обработчик сабмита не позволит сохранить невалидную форму по нажатию Enter
+placeForm.addEventListener('submit', function(evt) {
+    if (placeForm.checkValidity()) {
+        placeFormSubmitHandler(evt)
+        return
+    }
+    evt.preventDefault()
+}) 
 
 // добавит начальные карточки из массива
 initialCards.forEach(element => {
