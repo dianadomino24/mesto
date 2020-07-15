@@ -1,6 +1,33 @@
 // import {enableValidation} from './validate.js';
 // import { initialCards } from "./utils.js";
 
+//кейсы проверки валидности 
+const VALID = 0
+const INVALID_EMPTY = 1
+const INVALID_TOOSHORT = 2
+
+//проверяет валидность инпутов, очищенных от пробелов
+function isInputWithoutSpacingInvalid (inputElement) {
+    const inputElementNoSpacing = inputElement.value.trim()
+
+    if (inputElementNoSpacing.length == 0) {
+        return INVALID_EMPTY
+    } 
+    //если введено меньше 2 символов без учета пробелов в форме профиля (в форме места миним.длина инпута - 1)
+    if (inputElementNoSpacing.length < 2 && (inputElement.classList.contains('popup__input_type_name') || inputElement.classList.contains('popup__input_type_job'))) {
+        return INVALID_TOOSHORT
+    }
+    return VALID
+}
+
+//проверка валидности формы с учетом пробелов
+function isFormInvalid(form) {
+    inputList = Array.from(form.querySelectorAll('.popup__input'))
+    return inputList.some((inputElement) => {
+        return !inputElement.validity.valid || isInputWithoutSpacingInvalid(inputElement)})
+}
+
+
 const popup = document.querySelectorAll('.popup')
 const popupProfileOpenButton = document.querySelector('.profile__edit-button')
 const popupCloseButton = document.querySelector('.popup__close-button')
@@ -28,33 +55,6 @@ const emptyList = document.querySelector('.places__empty-list')
 
 const inputErrors = document.querySelectorAll('.popup__input-error')
 
-//не разобралась, как сделать импорт utils. добавление type module приводит к ошибкам в консоли. надеюсь, в следующ.спринте реализую:)
-const initialCards = [
-    {
-        name: 'Архыз',
-        link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg'
-    },
-    {
-        name: 'Челябинская область',
-        link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg'
-    },
-    {
-        name: 'Иваново',
-        link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg'
-    },
-    {
-        name: 'Камчатка',
-        link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg'
-    },
-    {
-        name: 'Холмогорский район',
-        link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg'
-    },
-    {
-        name: 'Байкал',
-        link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg'
-    }
-];
 
 //открывает/закрывает текущий попап из коробки
 const popupToggle = function () {
@@ -153,7 +153,7 @@ function profileFormSubmitHandler (evt) {
 }
 // обработчик сабмита не позволит сохранить невалидную форму по нажатию Enter
 formProfile.addEventListener('submit', function(evt) {
-    if (formProfile.checkValidity()) {
+    if (!isFormInvalid(formProfile)) {
         profileFormSubmitHandler(evt)
         return
     }
@@ -226,7 +226,7 @@ function placeFormSubmitHandler (evt) {
 
 //обработчик сабмита не позволит сохранить невалидную форму по нажатию Enter
 placeForm.addEventListener('submit', function(evt) {
-    if (placeForm.checkValidity()) {
+    if (!isFormInvalid(placeForm)) {
         placeFormSubmitHandler(evt)
         return
     }

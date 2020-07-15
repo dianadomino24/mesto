@@ -17,36 +17,69 @@ function hideInputError(inputElement, inputErrorClass, errorActiveClass, control
     errorElement.textContent = '';
 };
 //проверяет валидность инпутов, очищенных от пробелов
-function isInputWithoutSpacingValid (inputElement, controlSelector, inputErrorClass, errorActiveClass) {
-    const inputElementNoSpacing = inputElement.value.trim()
+function checkInputWithoutSpacing (inputElement, controlSelector, inputErrorClass, errorActiveClass) {
     const errorElement = findInputError(inputElement, controlSelector,inputErrorClass)
 
-    if (inputElementNoSpacing.length == 0) {
-        errorElement.textContent = "Заполните это поле.";
-        errorElement.classList.add(errorActiveClass);
-        return false
-    } 
+    switch (isInputWithoutSpacingInvalid(inputElement)) {
+        case INVALID_EMPTY:
+            errorElement.textContent = "Заполните это поле.";
+            errorElement.classList.add(errorActiveClass);
+        break;
 
-    //если введено меньше 2 символов без учета пробелов в форме профиля (в форме места миним.длина инпута - 1)
-    if (inputElementNoSpacing.length < 2 && errorElement.classList.contains('js-popup__input-error_type_profile')) {
-        errorElement.textContent = "Текст должен быть не короче 2 симв. Длина текста сейчас: 1 символ.";
-        errorElement.classList.add(errorActiveClass);
-        return false
+        case INVALID_TOOSHORT:
+            errorElement.textContent = "Текст должен быть не короче 2 симв. Длина текста сейчас: 1 символ.";
+            errorElement.classList.add(errorActiveClass);
+        break;
+
+        default:
+        alert( "error" );
     }
-    return true
-}
+} 
+
+// const VALID = 0
+// const INVALID_EMPTY = 1
+// const INVALID_TOOSHORT = 2
+
+
+// //проверяет валидность инпутов, очищенных от пробелов
+// function isInputWithoutSpacingInvalid (inputElement) {
+//     const inputElementNoSpacing = inputElement.value.trim()
+
+//     if (inputElementNoSpacing.length == 0) {
+//         return INVALID_EMPTY
+//     } 
+//     //если введено меньше 2 символов без учета пробелов в форме профиля (в форме места миним.длина инпута - 1)
+//     if (inputElementNoSpacing.length < 2 && inputElement.classList.contains('popup__input_type_name' || 'popup__input_type_job')) {
+//         return INVALID_TOOSHORT
+//     }
+//     return VALID
+// }
 
 //проверяет валидность инпутов с учетом пробелов
-function checkInputValidity (inputElement, inputErrorClass, errorActiveClass, controlSelector) {
-    //проверяет валидность инпутов, очищенных от пробелов
-    if (!isInputWithoutSpacingValid (inputElement, controlSelector, inputErrorClass, errorActiveClass)) {
-        return
-    } else {
-        if (!inputElement.validity.valid) {
-            showInputError(inputElement, inputElement.validationMessage, inputErrorClass, errorActiveClass, controlSelector);
-        } else {
-            hideInputError(inputElement, inputErrorClass, errorActiveClass, controlSelector);
-        }
+function checkInputValidity (inputElement, inputErrorClass, errorActiveClass, controlSelector) {  
+    const errorElement = findInputError(inputElement, controlSelector,inputErrorClass)
+
+    switch (isInputWithoutSpacingInvalid(inputElement)) {
+        case INVALID_EMPTY:
+            errorElement.textContent = "Заполните это поле.";
+            errorElement.classList.add(errorActiveClass);
+            break;
+
+        case INVALID_TOOSHORT:
+            errorElement.textContent = "Текст должен быть не короче 2 симв. Длина текста сейчас: 1 символ.";
+            errorElement.classList.add(errorActiveClass);
+            break;
+
+        case VALID:
+            if (!inputElement.validity.valid) {
+                showInputError(inputElement, inputElement.validationMessage, inputErrorClass, errorActiveClass, controlSelector);
+            } else {
+                hideInputError(inputElement, inputErrorClass, errorActiveClass, controlSelector);
+            }
+            break;
+
+        default:
+            alert( "error" );
     }
 }
 //выкл сабмит по нажатию Enter (чтобы нельзя было засабмитить невалидные инпуты)
@@ -61,7 +94,7 @@ function checkInputValidity (inputElement, inputErrorClass, errorActiveClass, co
 //вернет true, если есть невалидный инпут (с учетом проверки пробелов)
 function hasInvalidInput(inputList, controlSelector, inputErrorClass, errorActiveClass){
     return inputList.some((inputElement) => {
-        return !inputElement.validity.valid || !isInputWithoutSpacingValid(inputElement, controlSelector, inputErrorClass, errorActiveClass)})
+        return !inputElement.validity.valid || isInputWithoutSpacingInvalid(inputElement)})
 }
 //(раз)блокирует кнопку submit
 function toggleButtonState(inputList, buttonElement, inactiveButtonClass, controlSelector, inputErrorClass, errorActiveClass) {
