@@ -1,26 +1,3 @@
-// import {enableValidation} from './validate.js';
-// import { initialCards } from "./utils.js";
-
-// //кейсы проверки валидности 
-// const VALID = 0
-// const INVALID_EMPTY = 1
-// const INVALID_TOOSHORT = 2
-
-// //проверяет валидность инпутов, очищенных от пробелов
-// function isInputWithoutSpacingInvalid (inputElement) {
-//     const inputElementNoSpacing = inputElement.value.trim()
-
-//     if (inputElementNoSpacing.length == 0) {
-//         return INVALID_EMPTY
-//     } 
-//     //если введено меньше 2 символов без учета пробелов в форме профиля (в форме места миним.длина инпута - 1)
-//     if (inputElementNoSpacing.length < 2 && (inputElement.classList.contains('popup__input_type_name') || inputElement.classList.contains('popup__input_type_job'))) {
-//         return INVALID_TOOSHORT
-//     }
-//     return VALID
-// }
-
-
 const popup = document.querySelectorAll('.popup')
 const popupProfileOpenButton = document.querySelector('.profile__edit-button')
 const popupCloseButton = document.querySelector('.popup__close-button')
@@ -32,7 +9,11 @@ const inputJob = document.querySelector('.popup__input_type_job')
 //сюда будем класть текущий открытый попап
 let currentPopupBox = null
 
-let placesItems = document.querySelectorAll('.places__item')
+//imgTriggers у меня перезаписывается при удалении/добавлении карточек places, 
+//поэтому я не могу сделать его const.
+//или Вы хотите, чтобы я не перезаписывала массив, а написала отдельные ф-ции, которые
+//бы нашли в массиве, какую именно картинку надо удалить и таким образом обновили массив? 
+// а при добавлении карточки, добавили в массив его картинку?
 let imgTriggers = document.querySelectorAll('[data-img-trigger]')
 const imgPopup = document.querySelector('.popup_type_picture-zoom')
 
@@ -43,18 +24,27 @@ const placeForm = document.querySelector('.popup__form_type_place')
 const placeInputName = placeForm.querySelector('.popup__input_type_place-name')
 const placeInputPic = placeForm.querySelector('.popup__input_type_place-pic')
 const placeTemplate = document.querySelector('.place-template')
+
 //для надписи о том, что все карточки удалены
 const emptyList = document.querySelector('.places__empty-list')
 
-// const inputErrors = document.querySelectorAll('.popup__input-error')
-
-
+//закроет попап при нажатии на Esc
+function keyHandler(evt) {
+    if (evt.key === 'Escape' && currentPopupBox != null ){
+        cleanInputValues()
+        popupToggle()
+    }
+}
 //открывает/закрывает текущий попап из коробки
 const popupToggle = function () {
     currentPopupBox.classList.toggle('popup_opened')
-    //опустошает currentPopupBox при закрытии попапа
+    //прослушка для кнопок, чтоб закрыть при Esc
+    document.addEventListener('keydown', keyHandler)
+
+    //опустошает currentPopupBox при закрытии попапа и убирает прослушку Esc
     if (currentPopupBox && !currentPopupBox.classList.contains('popup_opened')) {
         currentPopupBox = null
+        document.removeEventListener('keydown', keyHandler)
     }
 }
 
@@ -74,26 +64,10 @@ const closePopupByClickingOverlay = function (event) {
     popupToggle()
 }
 
-//закроет попап при нажатии на Esc
-function keyHandler(evt) {
-    if (evt.key === 'Escape' && currentPopupBox != null ){
-        cleanInputValues()
-        popupToggle()
-    }
-}
-
-// //скрывает уведомления об ошибках в инпутах
-// function cleanInputErrors() {
-//     inputErrors.forEach(error => error.classList.remove('popup__input-error_active'))
-// }
-
-
 //прослушки для закрытия текущего попапа
 function addPopupListeners(currentPopupBox) {
     currentPopupBox.querySelector('.popup__close-button').addEventListener('click', popupToggle);
     currentPopupBox.addEventListener('click', closePopupByClickingOverlay);
-    //прослушка для кнопок, чтоб закрыть при Esc
-    document.addEventListener('keydown', keyHandler)
 }
 //открывает текущий попап, ставит прослушки и очищает input values и скрывает уведомления об ошибках
 function openCurrentPopup(evt) {
@@ -107,17 +81,11 @@ function openCurrentPopup(evt) {
     cleanInputValues()
     //перенесена в validate.js
     cleanInputErrors(currentPopupBox)
+
     popupToggle()
 
-    // enableValidation({
-    //     formSelector: '.popup__form',
-    //     inputSelector: '.popup__input',
-    //     submitButtonSelector: '.popup__save-button',
-    //     inactiveButtonClass: 'popup__save-button_disabled',
-    //     inputErrorClass: '.popup__input-error',
-    //     errorActiveClass: 'popup__input-error_active',
-    //     controlSelector: '.popup__label',
-    // });
+    //чтобы после открытия попапа при нажатии Enter не срабатывал toggle(фокус сместится с кнопки-триггера)
+    document.activeElement.blur()
 
     //если открылся попап редактирования профиля, то разблокируем его кнопку сабмита (чтоб она была доступна до изменения инпутов)
     if (currentPopupBox && currentPopupBox.classList.contains('popup_type_edit-profile')) {
@@ -149,8 +117,10 @@ function profileFormSubmitHandler (evt) {
     popupToggle()
 }
 
-//не придумала, как обойтись полностью без этой ф-ции, тк при сабмите на вход я получаю форму, 
-// и не могу исп-ть ее напрямую в hasInvalidInput, сначала надо найти inputList в форме
+
+//не придумала, как обойтись полностью без этой ф-ции, т.к. при сабмите на вход я получаю форму, 
+// и не могу исп-ть ее напрямую в hasInvalidInput, сначала надо найти inputList в форме.
+
 //проверка валидности формы с учетом пробелов
 function isFormInvalid(form) {
     inputList = Array.from(form.querySelectorAll('.popup__input'))
@@ -191,16 +161,6 @@ function checkEmptyPlacesList() {
         emptyList.classList.remove('places__empty-list_visible')
     }
 }
-
-// function checkEmptyPlacesList() {
-//     placesItems = document.querySelectorAll('.places__item')
-//     if (placesItems.length === 0) {
-//         emptyList.classList.add('places__empty-list_visible')
-//     } else {
-//         emptyList.classList.remove('places__empty-list_visible')
-//     }
-// }
-
 
 // обновляет массив карточек и проверяет пустой ли список(все карточки удалены)
 function updateImgTriggers () {
