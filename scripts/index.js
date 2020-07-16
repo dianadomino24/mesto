@@ -172,7 +172,6 @@ formProfile.addEventListener('submit', function(evt) {
 function deletePlace(e) {
     const place = e.target.closest('.places__item');
     place.remove();
-    updatePlacesItems()
     updateImgTriggers ();
 }
 
@@ -184,19 +183,31 @@ function addPlaceListeners(place) {
     place.querySelector('.place__delete-button').addEventListener('click', deletePlace)
 }
 
-// проверяет, есть ли в списке карточки, если нет, то делает видимой надпись о пустом списке
-function updatePlacesItems() {
-    placesItems = document.querySelectorAll('.places__item')
-    if (placesItems.length === 0) {
+// проверяет, есть ли в списке картинки, если нет, то делает видимой надпись о пустом списке
+function checkEmptyPlacesList() {
+    if (imgTriggers.length === 0) {
         emptyList.classList.add('places__empty-list_visible')
     } else {
         emptyList.classList.remove('places__empty-list_visible')
     }
 }
 
-// обновляем массив карточек
+// function checkEmptyPlacesList() {
+//     placesItems = document.querySelectorAll('.places__item')
+//     if (placesItems.length === 0) {
+//         emptyList.classList.add('places__empty-list_visible')
+//     } else {
+//         emptyList.classList.remove('places__empty-list_visible')
+//     }
+// }
+
+
+// обновляет массив карточек и проверяет пустой ли список(все карточки удалены)
 function updateImgTriggers () {
     imgTriggers = document.querySelectorAll('[data-img-trigger]')
+
+    checkEmptyPlacesList()
+
     imgTriggers.forEach(trigger => trigger.addEventListener('click', openImgPopup))
 }
 
@@ -210,7 +221,6 @@ function addPlace(placeName , placePic) {
     addPlaceListeners(place)
     
     placesList.prepend(place)
-    updatePlacesItems()
     updateImgTriggers ()  
 }
 
