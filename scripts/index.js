@@ -20,12 +20,6 @@
 //     return VALID
 // }
 
-//проверка валидности формы с учетом пробелов
-function isFormInvalid(form) {
-    inputList = Array.from(form.querySelectorAll('.popup__input'))
-    return hasInvalidInput(inputList)
-}
-
 
 const popup = document.querySelectorAll('.popup')
 const popupProfileOpenButton = document.querySelector('.profile__edit-button')
@@ -52,7 +46,7 @@ const placeTemplate = document.querySelector('.place-template')
 //для надписи о том, что все карточки удалены
 const emptyList = document.querySelector('.places__empty-list')
 
-const inputErrors = document.querySelectorAll('.popup__input-error')
+// const inputErrors = document.querySelectorAll('.popup__input-error')
 
 
 //открывает/закрывает текущий попап из коробки
@@ -88,10 +82,10 @@ function keyHandler(evt) {
     }
 }
 
-//скрывает уведомления об ошибках в инпутах
-function cleanInputErrors() {
-    inputErrors.forEach(error => error.classList.remove('popup__input-error_active'))
-}
+// //скрывает уведомления об ошибках в инпутах
+// function cleanInputErrors() {
+//     inputErrors.forEach(error => error.classList.remove('popup__input-error_active'))
+// }
 
 
 //прослушки для закрытия текущего попапа
@@ -111,7 +105,8 @@ function openCurrentPopup(evt) {
     currentPopupBox = document.querySelector(`[data-popup-name=${CSS.escape(currentPopupValue)}]`)
 
     cleanInputValues()
-    cleanInputErrors()
+    //перенесена в validate.js
+    cleanInputErrors(currentPopupBox)
     popupToggle()
 
     // enableValidation({
@@ -153,6 +148,15 @@ function profileFormSubmitHandler (evt) {
 
     popupToggle()
 }
+
+//не придумала, как обойтись полностью без этой ф-ции, тк при сабмите на вход я получаю форму, 
+// и не могу исп-ть ее напрямую в hasInvalidInput, сначала надо найти inputList в форме
+//проверка валидности формы с учетом пробелов
+function isFormInvalid(form) {
+    inputList = Array.from(form.querySelectorAll('.popup__input'))
+    return hasInvalidInput(inputList)
+}
+
 // обработчик сабмита не позволит сохранить невалидную форму по нажатию Enter
 formProfile.addEventListener('submit', function(evt) {
     if (!isFormInvalid(formProfile)) {

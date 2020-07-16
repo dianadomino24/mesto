@@ -16,25 +16,6 @@ function hideInputError(inputElement, inputErrorClass, errorActiveClass, control
     errorElement.classList.remove(errorActiveClass);
     errorElement.textContent = '';
 };
-//проверяет валидность инпутов, очищенных от пробелов
-function checkInputWithoutSpacing (inputElement, controlSelector, inputErrorClass, errorActiveClass) {
-    const errorElement = findInputError(inputElement, controlSelector,inputErrorClass)
-
-    switch (isInputWithoutSpacingInvalid(inputElement)) {
-        case INVALID_EMPTY:
-            errorElement.textContent = "Заполните это поле.";
-            errorElement.classList.add(errorActiveClass);
-        break;
-
-        case INVALID_TOOSHORT:
-            errorElement.textContent = "Текст должен быть не короче 2 симв. Длина текста сейчас: 1 символ.";
-            errorElement.classList.add(errorActiveClass);
-        break;
-
-        default:
-        alert( "error" );
-    }
-} 
 
 //кейсы проверки валидности 
 const VALID = 0
@@ -55,7 +36,7 @@ function isInputWithoutSpacingInvalid (inputElement) {
     return VALID
 }
 
-//проверяет валидность инпутов с учетом пробелов
+//проверяет валидность инпутов с учетом пробелов и выводит ошибки
 function checkInputValidity (inputElement, inputErrorClass, errorActiveClass, controlSelector) {  
     const errorElement = findInputError(inputElement, controlSelector,inputErrorClass)
 
@@ -82,6 +63,7 @@ function checkInputValidity (inputElement, inputErrorClass, errorActiveClass, co
             alert( "error" );
     }
 }
+
 //выкл сабмит по нажатию Enter (чтобы нельзя было засабмитить невалидные инпуты)
 // function preventEnterSubmit() {
 //     document.addEventListener('keydown', function(evt) {
@@ -104,6 +86,16 @@ function toggleButtonState(inputList, buttonElement, inactiveButtonClass) {
         buttonElement.classList.remove(inactiveButtonClass)
     }
 }
+
+//скрывает уведомления об ошибках в инпутах
+function cleanInputErrors(currentPopupBox) {
+    const inputErrors = currentPopupBox.querySelectorAll('.popup__input-error')
+    
+    if (inputErrors) {
+        inputErrors.forEach(error => error.classList.remove('popup__input-error_active'))
+    }
+}
+
 
 function setEventListeners(formElement, inputSelector, submitButtonSelector, inactiveButtonClass, inputErrorClass, errorActiveClass, controlSelector) {
     const inputList = Array.from(formElement.querySelectorAll(inputSelector));
