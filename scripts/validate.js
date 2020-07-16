@@ -92,13 +92,13 @@ function checkInputValidity (inputElement, inputErrorClass, errorActiveClass, co
 // }
 
 //вернет true, если есть невалидный инпут (с учетом проверки пробелов)
-function hasInvalidInput(inputList, controlSelector, inputErrorClass, errorActiveClass){
+function hasInvalidInput(inputList){
     return inputList.some((inputElement) => {
         return !inputElement.validity.valid || isInputWithoutSpacingInvalid(inputElement)})
 }
 //(раз)блокирует кнопку submit
-function toggleButtonState(inputList, buttonElement, inactiveButtonClass, controlSelector, inputErrorClass, errorActiveClass) {
-    if (hasInvalidInput(inputList, controlSelector, inputErrorClass, errorActiveClass)) {
+function toggleButtonState(inputList, buttonElement, inactiveButtonClass) {
+    if (hasInvalidInput(inputList)) {
         buttonElement.classList.add(inactiveButtonClass)
     } else {
         buttonElement.classList.remove(inactiveButtonClass)

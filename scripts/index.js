@@ -104,8 +104,11 @@ function addPopupListeners(currentPopupBox) {
 }
 //открывает текущий попап, ставит прослушки и очищает input values и скрывает уведомления об ошибках
 function openCurrentPopup(evt) {
-    let currentTrigger = evt.target
-    let currentPopupValue = currentTrigger.dataset.popupTrigger
+    const currentTrigger = evt.target
+    const currentPopupValue = currentTrigger.dataset.popupTrigger
+
+    //ответ к комментарию "можно лучше": в этот момент еще нет попапа с классом opened, 
+    // т.к. я сначала по дата атрибуту нахожу попап, а потом уже делаю ему тогл :)
     currentPopupBox = document.querySelector(`[data-popup-name=${CSS.escape(currentPopupValue)}]`)
 
     cleanInputValues()
@@ -212,8 +215,8 @@ function addPlace(placeName , placePic) {
 function placeFormSubmitHandler (evt) {
     evt.preventDefault();
 
-    let placeName = placeInputName.value
-    let placePic = placeInputPic.value
+    const placeName = placeInputName.value
+    const placePic = placeInputPic.value
 
     addPlace(placeName, placePic);
     
@@ -240,10 +243,10 @@ initialCards.forEach(element => {
 
 // откроет попап с приближенной картинкой, исходя из триггер-картинки
 function openImgPopup(evt) {
-    let currentImgTrigger = evt.target
+    const currentImgTrigger = evt.target
 
-    let imgName = currentImgTrigger.closest('.place').querySelector('.place__name').textContent
-    let imgSrc = currentImgTrigger.src
+    const imgName = currentImgTrigger.closest('.place').querySelector('.place__name').textContent
+    const imgSrc = currentImgTrigger.src
     
     imgPopup.querySelector('.picture-zoom__title').textContent = imgName
     imgPopup.querySelector('.picture-zoom__img').src = imgSrc
