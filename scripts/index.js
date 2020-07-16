@@ -1,30 +1,29 @@
 // import {enableValidation} from './validate.js';
 // import { initialCards } from "./utils.js";
 
-//кейсы проверки валидности 
-const VALID = 0
-const INVALID_EMPTY = 1
-const INVALID_TOOSHORT = 2
+// //кейсы проверки валидности 
+// const VALID = 0
+// const INVALID_EMPTY = 1
+// const INVALID_TOOSHORT = 2
 
-//проверяет валидность инпутов, очищенных от пробелов
-function isInputWithoutSpacingInvalid (inputElement) {
-    const inputElementNoSpacing = inputElement.value.trim()
+// //проверяет валидность инпутов, очищенных от пробелов
+// function isInputWithoutSpacingInvalid (inputElement) {
+//     const inputElementNoSpacing = inputElement.value.trim()
 
-    if (inputElementNoSpacing.length == 0) {
-        return INVALID_EMPTY
-    } 
-    //если введено меньше 2 символов без учета пробелов в форме профиля (в форме места миним.длина инпута - 1)
-    if (inputElementNoSpacing.length < 2 && (inputElement.classList.contains('popup__input_type_name') || inputElement.classList.contains('popup__input_type_job'))) {
-        return INVALID_TOOSHORT
-    }
-    return VALID
-}
+//     if (inputElementNoSpacing.length == 0) {
+//         return INVALID_EMPTY
+//     } 
+//     //если введено меньше 2 символов без учета пробелов в форме профиля (в форме места миним.длина инпута - 1)
+//     if (inputElementNoSpacing.length < 2 && (inputElement.classList.contains('popup__input_type_name') || inputElement.classList.contains('popup__input_type_job'))) {
+//         return INVALID_TOOSHORT
+//     }
+//     return VALID
+// }
 
 //проверка валидности формы с учетом пробелов
 function isFormInvalid(form) {
     inputList = Array.from(form.querySelectorAll('.popup__input'))
-    return inputList.some((inputElement) => {
-        return !inputElement.validity.valid || isInputWithoutSpacingInvalid(inputElement)})
+    return hasInvalidInput(inputList)
 }
 
 
