@@ -1,5 +1,7 @@
 import {Card} from './Card.js'
-
+import {Popup} from './Popup.js'
+import {FormValidator} from './FormValidator.js'
+import {initialCards, checkEmptyPlacesList} from './utils.js'
 
 const popupProfileOpenButton = document.querySelector('.profile__edit-button')
 const popupCloseButton = document.querySelector('.popup__close-button')
@@ -15,14 +17,14 @@ const imgPopup = document.querySelector('.popup_type_picture-zoom')
 
 const popupTriggers = document.querySelectorAll('[data-popup-trigger]')
 
-const placesList = document.querySelector('.places__list')
+export const placesList = document.querySelector('.places__list')
 const placeForm = document.querySelector('.popup__form_type_place')
 const placeInputName = placeForm.querySelector('.popup__input_type_place-name')
 const placeInputPic = placeForm.querySelector('.popup__input_type_place-pic')
 const placeTemplate = document.querySelector('.place-template')
 
-//для надписи о том, что все карточки удалены
-const emptyList = document.querySelector('.places__empty-list')
+// //для надписи о том, что все карточки удалены
+// const emptyList = document.querySelector('.places__empty-list')
 
 //закроет попап при нажатии на Esc
 function keyHandler(evt) {
@@ -152,34 +154,34 @@ formProfile.addEventListener('submit', function(evt) {
 }
 );
 
-// проверяет, есть ли в списке картинки, если нет, то делает видимой надпись о пустом списке
-//в placesList всегда есть минимум 1 элемент - надпись о пустом списке
-export function checkEmptyPlacesList() {
-    if (placesList.children.length === 1) {
-        emptyList.classList.add('places__empty-list_visible')
-    } else {
-        emptyList.classList.remove('places__empty-list_visible')
-    }
-}
+// // проверяет, есть ли в списке картинки, если нет, то делает видимой надпись о пустом списке
+// //в placesList всегда есть минимум 1 элемент - надпись о пустом списке
+// export function checkEmptyPlacesList() {
+//     if (placesList.children.length === 1) {
+//         emptyList.classList.add('places__empty-list_visible')
+//     } else {
+//         emptyList.classList.remove('places__empty-list_visible')
+//     }
+// }
 
-// удаляет карточку
-function deletePlace(e) {
-    const place = e.target.closest('.places__item');
-    place.remove();
-    checkEmptyPlacesList()
-}
+// // удаляет карточку
+// function deletePlace(e) {
+//     const place = e.target.closest('.places__item');
+//     place.remove();
+//     checkEmptyPlacesList()
+// }
 
-//прослушки для кнопок лайка и удаления карточек
-function addPlaceListeners(place) {
-    //прослушка для картинки, чтоб открыть попап с картинкой
-    const placeImgTrigger = place.querySelector('.place__image')
-    placeImgTrigger.addEventListener('click', openImgPopup)
+// //прослушки для кнопок лайка и удаления карточек
+// function addPlaceListeners(place) {
+//     //прослушка для картинки, чтоб открыть попап с картинкой
+//     const placeImgTrigger = place.querySelector('.place__image')
+//     placeImgTrigger.addEventListener('click', openImgPopup)
 
-    place.querySelector('.place__like-button').addEventListener('click', function(evt) {
-        evt.target.classList.toggle('place__like-button_active');
-    }) 
-    place.querySelector('.place__delete-button').addEventListener('click', deletePlace)
-}
+//     place.querySelector('.place__like-button').addEventListener('click', function(evt) {
+//         evt.target.classList.toggle('place__like-button_active');
+//     }) 
+//     place.querySelector('.place__delete-button').addEventListener('click', deletePlace)
+// }
 
 // // создает карточку, ставит ей прослушки
 // function createPlace(placeName , placePic) {
