@@ -138,7 +138,7 @@ function profileFormSubmitHandler (evt) {
 
 //проверка валидности формы с учетом пробелов
 function isFormInvalid(form) {
-    inputList = Array.from(form.querySelectorAll('.popup__input'))
+    const inputList = Array.from(form.querySelectorAll('.popup__input'))
     return hasInvalidInput(inputList)
 }
 
@@ -154,7 +154,7 @@ formProfile.addEventListener('submit', function(evt) {
 
 // проверяет, есть ли в списке картинки, если нет, то делает видимой надпись о пустом списке
 //в placesList всегда есть минимум 1 элемент - надпись о пустом списке
-function checkEmptyPlacesList() {
+export function checkEmptyPlacesList() {
     if (placesList.children.length === 1) {
         emptyList.classList.add('places__empty-list_visible')
     } else {
@@ -181,20 +181,29 @@ function addPlaceListeners(place) {
     place.querySelector('.place__delete-button').addEventListener('click', deletePlace)
 }
 
-// создает карточку, ставит ей прослушки
-function createPlace(placeName , placePic) {
-    const place = placeTemplate.content.cloneNode(true);
+// // создает карточку, ставит ей прослушки
+// function createPlace(placeName , placePic) {
+//     const place = placeTemplate.content.cloneNode(true);
 
-    place.querySelector('.place__name').textContent = placeName
-    place.querySelector('.place__image').src = placePic
+//     place.querySelector('.place__name').textContent = placeName
+//     place.querySelector('.place__image').src = placePic
 
-    addPlaceListeners(place)
-    return place
+//     addPlaceListeners(place)
+//     return place
+// }
+
+function addPlace(placesList, cardElement) {
+    placesList.prepend(cardElement)
 }
 
-function addPlace(placesList, place) {
-    placesList.prepend(place)
-}
+const cardTemplate = document.querySelector('.place-template')
+// добавит начальные карточки из массива (initialCards в utils.js)
+initialCards.forEach(element => {
+    const card = new Card (element.name, element.link, cardTemplate)
+    const cardElement = card.generateCard()
+    placesList.append(cardElement)
+}) 
+
 
 function placeFormSubmitHandler (evt) {
     evt.preventDefault();
@@ -202,9 +211,10 @@ function placeFormSubmitHandler (evt) {
     const placeName = placeInputName.value
     const placePic = placeInputPic.value
 
-    const place = createPlace(placeName, placePic);
-    
-    addPlace(placesList, place)
+    const card = new Card (placeName, placePic, cardTemplate)
+    const cardElement = card.generateCard()
+
+    addPlace(placesList, cardElement)
 
     checkEmptyPlacesList() 
 
@@ -222,13 +232,6 @@ placeForm.addEventListener('submit', function(evt) {
 
 
 
-const cardTemplate = document.querySelector('.place-template')
-// добавит начальные карточки из массива (initialCards в utils.js)
-initialCards.forEach(element => {
-    const card = new Card (element.name, element.link, cardTemplate)
-    const cardElement = card.generateCard()
-    placesList.append(cardElement)
-}) 
 
 
 // откроет попап с приближенной картинкой, исходя из триггер-картинки
