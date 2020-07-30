@@ -1,3 +1,6 @@
+import {Card} from './Card.js'
+
+
 const popupProfileOpenButton = document.querySelector('.profile__edit-button')
 const popupCloseButton = document.querySelector('.popup__close-button')
 const profileName = document.querySelector('.profile__name')
@@ -217,14 +220,19 @@ placeForm.addEventListener('submit', function(evt) {
     evt.preventDefault()
 }) 
 
+
+
+const cardTemplate = document.querySelector('.place-template')
 // добавит начальные карточки из массива (initialCards в utils.js)
 initialCards.forEach(element => {
-    const place = createPlace(element.name, element.link);
-    addPlace(placesList, place)
+    const card = new Card (element.name, element.link, cardTemplate)
+    const cardElement = card.generateCard()
+    placesList.append(cardElement)
 }) 
 
+
 // откроет попап с приближенной картинкой, исходя из триггер-картинки
-function openImgPopup(evt) {
+export function openImgPopup(evt) {
     const currentImgTrigger = evt.target
 
     const imgName = currentImgTrigger.closest('.place').querySelector('.place__name').textContent
