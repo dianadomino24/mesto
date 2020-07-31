@@ -1,3 +1,4 @@
+
 // находит элемент ошибки в ближайшем к текущему инпуту лэйбле  
 function findInputError(inputElement, controlSelector,inputErrorClass) {
     return inputElement.closest(controlSelector).querySelector(inputErrorClass)
@@ -103,30 +104,4 @@ function setEventListeners(formElement, inputSelector, submitButtonSelector, ina
     });
 };
 
-function enableValidation({
-        formSelector,
-        inputSelector,
-        submitButtonSelector,
-        inactiveButtonClass,
-        inputErrorClass,
-        errorActiveClass,
-        controlSelector}) {
-    const formList = Array.from(document.querySelectorAll(formSelector));
-    formList.forEach((formElement) => {
-        formElement.addEventListener('submit', function (evt) {
-            evt.preventDefault()
-        });
 
-        setEventListeners(formElement, inputSelector, submitButtonSelector, inactiveButtonClass, inputErrorClass, errorActiveClass, controlSelector);
-    });
-};
-
-enableValidation({
-    formSelector: '.popup__form',
-    inputSelector: '.popup__input',
-    submitButtonSelector: '.popup__save-button',
-    inactiveButtonClass: 'popup__save-button_disabled',
-    inputErrorClass: '.popup__input-error',
-    errorActiveClass: 'popup__input-error_active',
-    controlSelector: '.popup__label',
-}); 

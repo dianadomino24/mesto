@@ -1,7 +1,8 @@
 import {Card} from './Card.js'
 import {Popup} from './Popup.js'
-import {FormValidator} from './FormValidator.js'
+import {cleanInputErrors, FormValidator} from './FormValidator.js'
 import {initialCards} from './utils.js'
+
 
 const popupProfileOpenButton = document.querySelector('.profile__edit-button')
 const popupCloseButton = document.querySelector('.popup__close-button')
@@ -25,6 +26,70 @@ const placeTemplate = document.querySelector('.place-template')
 
 // //для надписи о том, что все карточки удалены
 // const emptyList = document.querySelector('.places__empty-list')
+
+const formProfile = document.querySelector('.popup__form_type_profile')
+
+
+function formSubmit(formSelectorsObj) {
+    const formList = Array.from(document.querySelectorAll(formSelectorsObj.formSelector));
+    formList.forEach((formElement) => {
+        const formValidator = new FormValidator(formSelectorsObj, formElement)
+        formValidator.enableValidation()
+        
+        formElement.addEventListener('submit', function (evt) {
+            evt.preventDefault()
+
+            // const formValidator = new FormValidator(formSelectorsObj, formElement)
+            // formValidator.enableValidation()
+
+            if (formElement == formProfile && !formValidator.hasInvalidInput()) {
+                profileFormSubmitHandler(evt)
+                return
+            } else if (formElement == placeForm && !formValidator.hasInvalidInput()) {
+                placeFormSubmitHandler(evt)
+                return
+            }
+        })
+
+    })
+}
+    
+//     //проверка валидности формы с учетом пробелов
+//     function isFormInvalid(form, formValidator) {
+//         const inputList = Array.from(form.querySelectorAll('.popup__input'))
+//         return formValidator.hasInvalidInput()
+//     }
+//      // обработчик сабмита не позволит сохранить невалидную форму по нажатию Enter
+//     formProfile.addEventListener('submit', function(evt) {
+//         if (!isFormInvalid(formProfile, formValidator)) {
+//             profileFormSubmitHandler(evt)
+//             return
+//         }
+//         evt.preventDefault()
+//     })
+
+//     //обработчик сабмита не позволит сохранить невалидную форму по нажатию Enter
+//     placeForm.addEventListener('submit', function(evt) {
+//         if (!isFormInvalid(placeForm, formValidator)) {
+//             placeFormSubmitHandler(evt)
+//             return
+//         }
+//         evt.preventDefault()
+//     }) 
+// }
+
+const formSelectorsObj = {
+    formSelector: '.popup__form',
+    inputSelector: '.popup__input',
+    submitButtonSelector: '.popup__save-button',
+    inactiveButtonClass: 'popup__save-button_disabled',
+    inputErrorClass: '.popup__input-error',
+    errorActiveClass: 'popup__input-error_active',
+    controlSelector: '.popup__label',
+}
+formSubmit(formSelectorsObj); 
+
+
 
 //закроет попап при нажатии на Esc
 function keyHandler(evt) {
@@ -101,7 +166,7 @@ function openCurrentPopup(evt) {
     currentPopupBox = document.querySelector(`[data-popup-name=${CSS.escape(currentPopupValue)}]`)
 
     cleanInputValues()
-    //перенесена в validate.js
+    
     cleanInputErrors(currentPopupBox)
 
     popupToggle()
@@ -119,7 +184,7 @@ function openCurrentPopup(evt) {
 popupTriggers.forEach(trigger => trigger.addEventListener('click', openCurrentPopup))
 
 
-const formProfile = document.querySelector('.popup__form_type_profile')
+
 
 //при открытии попапа редактирования профиля заполняет values инпутов данными из профиля
 popupProfileOpenButton.addEventListener('click', function() {
@@ -138,21 +203,20 @@ function profileFormSubmitHandler (evt) {
 }
 
 
-//проверка валидности формы с учетом пробелов
-function isFormInvalid(form) {
-    const inputList = Array.from(form.querySelectorAll('.popup__input'))
-    return hasInvalidInput(inputList)
-}
+// //проверка валидности формы с учетом пробелов
+// function isFormInvalid(form) {
+//     const inputList = Array.from(form.querySelectorAll('.popup__input'))
+//     return formValidator.hasInvalidInput()
+// }
 
-// обработчик сабмита не позволит сохранить невалидную форму по нажатию Enter
-formProfile.addEventListener('submit', function(evt) {
-    if (!isFormInvalid(formProfile)) {
-        profileFormSubmitHandler(evt)
-        return
-    }
-    evt.preventDefault()
-}
-);
+// // обработчик сабмита не позволит сохранить невалидную форму по нажатию Enter
+// formProfile.addEventListener('submit', function(evt) {
+//     if (!isFormInvalid(formProfile)) {
+//         profileFormSubmitHandler(evt)
+//         return
+//     }
+//     evt.preventDefault()
+// });
 
 // // проверяет, есть ли в списке картинки, если нет, то делает видимой надпись о пустом списке
 // //в placesList всегда есть минимум 1 элемент - надпись о пустом списке
@@ -223,14 +287,14 @@ function placeFormSubmitHandler (evt) {
     popupToggle()
 }
 
-//обработчик сабмита не позволит сохранить невалидную форму по нажатию Enter
-placeForm.addEventListener('submit', function(evt) {
-    if (!isFormInvalid(placeForm)) {
-        placeFormSubmitHandler(evt)
-        return
-    }
-    evt.preventDefault()
-}) 
+// //обработчик сабмита не позволит сохранить невалидную форму по нажатию Enter
+// placeForm.addEventListener('submit', function(evt) {
+//     if (!isFormInvalid(placeForm)) {
+//         placeFormSubmitHandler(evt)
+//         return
+//     }
+//     evt.preventDefault()
+// }) 
 
 
 
@@ -251,4 +315,5 @@ export function openImgPopup(evt) {
     popupToggle()
     // addPopupListeners(currentPopupBox)
 }
+
 
