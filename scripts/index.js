@@ -1,11 +1,11 @@
 import {Card} from './Card.js'
-import {Popup} from './Popup.js'
+// import {Popup} from './Popup.js'
 import {cleanInputErrors, FormValidator} from './FormValidator.js'
 import {initialCards} from './utils.js'
 
 
 const popupProfileOpenButton = document.querySelector('.profile__edit-button')
-const popupCloseButton = document.querySelector('.popup__close-button')
+const popupCloseButtonSelector = '.popup__close-button'
 const profileName = document.querySelector('.profile__name')
 const profileJob = document.querySelector('.profile__job')
 const inputName = document.querySelector('.popup__input_type_name')
@@ -22,61 +22,31 @@ export const placesList = document.querySelector('.places__list')
 const placeForm = document.querySelector('.popup__form_type_place')
 const placeInputName = placeForm.querySelector('.popup__input_type_place-name')
 const placeInputPic = placeForm.querySelector('.popup__input_type_place-pic')
-const placeTemplate = document.querySelector('.place-template')
-
-// //для надписи о том, что все карточки удалены
-// const emptyList = document.querySelector('.places__empty-list')
 
 const formProfile = document.querySelector('.popup__form_type_profile')
 
-
-function formSubmit(formSelectorsObj) {
+//валидирует формы и запускает сабмит в зависимости от типа формы
+function formValidationAndSubmit(formSelectorsObj) {
     const formList = Array.from(document.querySelectorAll(formSelectorsObj.formSelector));
     formList.forEach((formElement) => {
         const formValidator = new FormValidator(formSelectorsObj, formElement)
         formValidator.enableValidation()
-        
+
         formElement.addEventListener('submit', function (evt) {
             evt.preventDefault()
 
-            // const formValidator = new FormValidator(formSelectorsObj, formElement)
-            // formValidator.enableValidation()
-
-            if (formElement == formProfile && !formValidator.hasInvalidInput()) {
-                profileFormSubmitHandler(evt)
-                return
-            } else if (formElement == placeForm && !formValidator.hasInvalidInput()) {
-                placeFormSubmitHandler(evt)
-                return
+            if (!formValidator.hasInvalidInput()) {
+                if (formElement == formProfile) {
+                    profileFormSubmitHandler(evt)
+                    return
+                } else if (formElement == placeForm) {
+                    placeFormSubmitHandler(evt)
+                    return
+                }
             }
         })
-
     })
 }
-    
-//     //проверка валидности формы с учетом пробелов
-//     function isFormInvalid(form, formValidator) {
-//         const inputList = Array.from(form.querySelectorAll('.popup__input'))
-//         return formValidator.hasInvalidInput()
-//     }
-//      // обработчик сабмита не позволит сохранить невалидную форму по нажатию Enter
-//     formProfile.addEventListener('submit', function(evt) {
-//         if (!isFormInvalid(formProfile, formValidator)) {
-//             profileFormSubmitHandler(evt)
-//             return
-//         }
-//         evt.preventDefault()
-//     })
-
-//     //обработчик сабмита не позволит сохранить невалидную форму по нажатию Enter
-//     placeForm.addEventListener('submit', function(evt) {
-//         if (!isFormInvalid(placeForm, formValidator)) {
-//             placeFormSubmitHandler(evt)
-//             return
-//         }
-//         evt.preventDefault()
-//     }) 
-// }
 
 const formSelectorsObj = {
     formSelector: '.popup__form',
@@ -87,7 +57,7 @@ const formSelectorsObj = {
     errorActiveClass: 'popup__input-error_active',
     controlSelector: '.popup__label',
 }
-formSubmit(formSelectorsObj); 
+formValidationAndSubmit(formSelectorsObj); 
 
 
 
@@ -100,7 +70,9 @@ function keyHandler(evt) {
 }
 //открывает/закрывает текущий попап из коробки
 function popupToggle() {
-    currentPopupBox.classList.toggle('popup_opened')
+    if (currentPopupBox) {
+        currentPopupBox.classList.toggle('popup_opened')
+    }
 
     //опустошает currentPopupBox при закрытии попапа и убирает прослушку Esc
     if (currentPopupBox && !currentPopupBox.classList.contains('popup_opened')) {
@@ -133,7 +105,7 @@ const popupList = Array.from(document.querySelectorAll('.popup'))
 //прослушки для закрытия открытого попапа
 function addPopupListeners(popupList) {
     popupList.forEach(popup => {
-        popup.querySelector('.popup__close-button').addEventListener('click', popupToggle)
+        popup.querySelector(popupCloseButtonSelector).addEventListener('click', popupToggle)
         popup.addEventListener('mousedown', closePopupByClickingOverlay)
     })
 }
@@ -151,12 +123,6 @@ function submitButtonStateBeforeInput(currentPopupBox) {
         currentPopupBox.querySelector('.popup__save-button').classList.add('popup__save-button_disabled')
     }
 }
-
-// //прослушки для закрытия текущего попапа
-// function addPopupListeners(currentPopupBox) {
-//     currentPopupBox.querySelector('.popup__close-button').addEventListener('click', popupToggle);
-//     currentPopupBox.addEventListener('mousedown', closePopupByClickingOverlay);
-// }
 
 //открывает текущий попап, ставит прослушки и очищает input values и скрывает уведомления об ошибках
 function openCurrentPopup(evt) {
@@ -177,13 +143,10 @@ function openCurrentPopup(evt) {
     //установит состоянии кнопки при открытии попапа до введения инпута
     submitButtonStateBeforeInput(currentPopupBox)
 
-    // addPopupListeners(currentPopupBox)
 }
 
 //при клике на триггер запускает открытие соответствующего триггеру попапа
 popupTriggers.forEach(trigger => trigger.addEventListener('click', openCurrentPopup))
-
-
 
 
 //при открытии попапа редактирования профиля заполняет values инпутов данными из профиля
@@ -202,62 +165,7 @@ function profileFormSubmitHandler (evt) {
     popupToggle()
 }
 
-
-// //проверка валидности формы с учетом пробелов
-// function isFormInvalid(form) {
-//     const inputList = Array.from(form.querySelectorAll('.popup__input'))
-//     return formValidator.hasInvalidInput()
-// }
-
-// // обработчик сабмита не позволит сохранить невалидную форму по нажатию Enter
-// formProfile.addEventListener('submit', function(evt) {
-//     if (!isFormInvalid(formProfile)) {
-//         profileFormSubmitHandler(evt)
-//         return
-//     }
-//     evt.preventDefault()
-// });
-
-// // проверяет, есть ли в списке картинки, если нет, то делает видимой надпись о пустом списке
-// //в placesList всегда есть минимум 1 элемент - надпись о пустом списке
-// export function checkEmptyPlacesList() {
-//     if (placesList.children.length === 1) {
-//         emptyList.classList.add('places__empty-list_visible')
-//     } else {
-//         emptyList.classList.remove('places__empty-list_visible')
-//     }
-// }
-
-// // удаляет карточку
-// function deletePlace(e) {
-//     const place = e.target.closest('.places__item');
-//     place.remove();
-//     checkEmptyPlacesList()
-// }
-
-// //прослушки для кнопок лайка и удаления карточек
-// function addPlaceListeners(place) {
-//     //прослушка для картинки, чтоб открыть попап с картинкой
-//     const placeImgTrigger = place.querySelector('.place__image')
-//     placeImgTrigger.addEventListener('click', openImgPopup)
-
-//     place.querySelector('.place__like-button').addEventListener('click', function(evt) {
-//         evt.target.classList.toggle('place__like-button_active');
-//     }) 
-//     place.querySelector('.place__delete-button').addEventListener('click', deletePlace)
-// }
-
-// // создает карточку, ставит ей прослушки
-// function createPlace(placeName , placePic) {
-//     const place = placeTemplate.content.cloneNode(true);
-
-//     place.querySelector('.place__name').textContent = placeName
-//     place.querySelector('.place__image').src = placePic
-
-//     addPlaceListeners(place)
-//     return place
-// }
-
+//добавляет новые карточки из попапа 
 function addPlace(placesList, cardElement) {
     placesList.prepend(cardElement)
 }
@@ -287,18 +195,6 @@ function placeFormSubmitHandler (evt) {
     popupToggle()
 }
 
-// //обработчик сабмита не позволит сохранить невалидную форму по нажатию Enter
-// placeForm.addEventListener('submit', function(evt) {
-//     if (!isFormInvalid(placeForm)) {
-//         placeFormSubmitHandler(evt)
-//         return
-//     }
-//     evt.preventDefault()
-// }) 
-
-
-
-
 
 // откроет попап с приближенной картинкой, исходя из триггер-картинки
 export function openImgPopup(evt) {
@@ -313,7 +209,6 @@ export function openImgPopup(evt) {
     currentPopupBox = imgPopup
 
     popupToggle()
-    // addPopupListeners(currentPopupBox)
 }
 
 
