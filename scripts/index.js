@@ -1,7 +1,7 @@
 import {Card} from './Card.js'
 import {Popup} from './Popup.js'
 import {FormValidator} from './FormValidator.js'
-import {initialCards, checkEmptyPlacesList} from './utils.js'
+import {initialCards} from './utils.js'
 
 const popupProfileOpenButton = document.querySelector('.profile__edit-button')
 const popupCloseButton = document.querySelector('.popup__close-button')
@@ -218,7 +218,7 @@ function placeFormSubmitHandler (evt) {
 
     addPlace(placesList, cardElement)
 
-    checkEmptyPlacesList() 
+    card.checkEmptyPlacesList() 
 
     popupToggle()
 }
