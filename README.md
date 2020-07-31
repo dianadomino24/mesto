@@ -11,13 +11,17 @@
 
 Использовались css, html и javascript.
 
+Выполнен рефакторинг в соответствии с Объектно Ориентированным Программированием (ООП). 
+Использованы классы для реализации валидации и создания карточки места, которые 
+подключены через модули.
+
 **Figma**
 
 * [Ссылка на макет в Figma 4](https://www.figma.com/file/StZjf8HnoeLdiXS7dYrLAh/JavaScript.-Sprint-4)
 
 * [Ссылка на макет в Figma 5](https://www.figma.com/file/nlYpT4VhFiwimn2YlncrcF/JavaScript.-Sprint-5?node-id=0%3A1)
 
-* [Ссылка на макет в Figma 6](https://www.figma.com/file/XNaGNEZD5NEjeyJzAT4gMb/JavaScript.-Sprint-6?node-id=0%3A1)
+* [Ссылка на макет в Figma 6](https://www.figma.com/file/XNaGNEZD5NEjeyJzAT4gMb/JavaScript.-Sprint-6?node-id=0%3A1) 
 
 
 **Ссылка на GitPages**
@@ -32,6 +36,8 @@
 * методы работы с формами в javascript, изменение классов, 
 условные конструкции, метод addEventListener,
 * методы добавления разметки через template.content.cloneNode,
+* рефакторинг кода с использованием классов из ООП
+* использование модулей 
 * применение свойств target у event,
 * метод forEach,
 * отзывчивая (responsive), адаптивная (adaptive) и
@@ -44,6 +50,7 @@
 В перспективе необходимо доработать сайт: 
 
 * наладить отправку данных на сервер
+* реализовать открытие и закрытие попапов через класс ООП
 * реализовать проверку валидности, используя регулярные выражения
 * реализовать редактирование текущих карточек
 * перетаскивание карточек мышью

@@ -34,8 +34,8 @@ export class Card {
         this._element = null
     }
 
-    _likeCard(evt) {
-        evt.target.classList.toggle('place__like-button_active')
+    _likeCard(likeCardButton) {
+        likeCardButton.classList.toggle('place__like-button_active')
     }
 
     // _openImgPopup(evt) {
@@ -44,8 +44,8 @@ export class Card {
 
     _setEventListeners() {
         const likeCardButton = this._element.querySelector('.place__like-button')
-        likeCardButton.addEventListener('click', (evt) => { 
-            this._likeCard(evt)
+        likeCardButton.addEventListener('click', () => { 
+            this._likeCard(likeCardButton)
         })
         
         const deleteCardButton = this._element.querySelector('.place__delete-button')
