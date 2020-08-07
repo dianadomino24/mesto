@@ -1,7 +1,11 @@
+import Section from './Section.js'
 import {Card} from './Card.js'
 // import {Popup} from './Popup.js'
 import {cleanInputErrors, FormValidator} from './FormValidator.js'
-import {initialCards} from './utils.js'
+import {initialCardsArr} from './utils.js'
+// import {PopupWithImage} from './PopupWithImage.js'
+// import {PopupWithForm} from './PopupWithForm.js'
+import UserInfo from './UserInfo.js'
 
 
 const popupProfileOpenButton = document.querySelector('.profile__edit-button')
@@ -19,11 +23,45 @@ const imgPopup = document.querySelector('.popup_type_picture-zoom')
 const popupTriggers = document.querySelectorAll('[data-popup-trigger]')
 
 export const placesList = document.querySelector('.places__list')
+export const placesListSelector = '.places__list'
+
 const placeForm = document.querySelector('.popup__form_type_place')
 const placeInputName = placeForm.querySelector('.popup__input_type_place-name')
 const placeInputPic = placeForm.querySelector('.popup__input_type_place-pic')
 
 const formProfile = document.querySelector('.popup__form_type_profile')
+
+const cardTemplate = document.querySelector('.place-template')
+////////////// добавит начальные карточки из массива (initialCards в utils.js)
+
+
+const initialCardsList = new Section({
+    items: initialCardsArr,
+    renderer: (item) => {
+        const card = new Card(item.name, item.link, cardTemplate)
+        const cardElement = card.generateCard()
+        initialCardsList.addItem(cardElement)
+    },
+},
+placesListSelector
+) 
+
+initialCardsList.renderItems()
+
+
+const profileNameSelector = '.profile__name'
+const profileJobSelector = '.profile__job'
+
+const userInfo1 = new UserInfo({name: profileNameSelector, job: profileJobSelector})
+
+
+// initialCards.forEach(element => {
+//     const card = new Card (element.name, element.link, cardTemplate)
+//     const cardElement = card.generateCard()
+//     placesList.append(cardElement)
+// }) 
+
+
 
 //валидирует формы и запускает сабмит в зависимости от типа формы
 function formValidationAndSubmit(formSelectorsObj) {
@@ -38,10 +76,10 @@ function formValidationAndSubmit(formSelectorsObj) {
             if (!formValidator.hasInvalidInput()) {
                 if (formElement == formProfile) {
                     profileFormSubmitHandler(evt)
-                    return
+                    
                 } else if (formElement == placeForm) {
                     placeFormSubmitHandler(evt)
-                    return
+                    
                 }
             }
         })
@@ -151,8 +189,10 @@ popupTriggers.forEach(trigger => trigger.addEventListener('click', openCurrentPo
 
 //при открытии попапа редактирования профиля заполняет values инпутов данными из профиля
 popupProfileOpenButton.addEventListener('click', function() {
-    inputName.value = profileName.textContent
-    inputJob.value = profileJob.textContent
+    const profileInfo = userInfo1.getUserInfo()
+
+    inputName.value = profileInfo.name
+    inputJob.value = profileInfo.job
 })
 
 function profileFormSubmitHandler (evt) {
@@ -169,14 +209,6 @@ function profileFormSubmitHandler (evt) {
 function addPlace(placesList, cardElement) {
     placesList.prepend(cardElement)
 }
-
-const cardTemplate = document.querySelector('.place-template')
-// добавит начальные карточки из массива (initialCards в utils.js)
-initialCards.forEach(element => {
-    const card = new Card (element.name, element.link, cardTemplate)
-    const cardElement = card.generateCard()
-    placesList.append(cardElement)
-}) 
 
 
 function placeFormSubmitHandler (evt) {

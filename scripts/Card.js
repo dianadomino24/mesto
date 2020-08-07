@@ -3,7 +3,7 @@ import {openImgPopup, placesList} from './index.js'
 //для надписи о том, что все карточки удалены
 const emptyList = document.querySelector('.places__empty-list')
 
-
+// , handleCardClick
 export class Card {
     constructor (cardName, cardImg, cardTemplate) {
         this._cardTemplate= cardTemplate;
