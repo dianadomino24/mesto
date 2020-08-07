@@ -198,31 +198,32 @@ popupProfileOpenButton.addEventListener('click', function() {
 function profileFormSubmitHandler (evt) {
     evt.preventDefault();
 
-    // если введены values с пробелами, то обрежем лишние пробелы
-    profileName.textContent = inputName.value.trim()
-    profileJob.textContent = inputJob.value.trim()
+     // если введены values с пробелами, то обрежем лишние пробелы
+    userInfo1.setUserInfo({name: inputName.value.trim(), job: inputJob.value.trim()})
 
     popupToggle()
 }
 
-//добавляет новые карточки из попапа 
-function addPlace(placesList, cardElement) {
-    placesList.prepend(cardElement)
-}
-
-
+//добавляет новые карточки из попапа
 function placeFormSubmitHandler (evt) {
     evt.preventDefault();
 
-    const placeName = placeInputName.value
-    const placePic = placeInputPic.value
-
-    const card = new Card (placeName, placePic, cardTemplate)
-    const cardElement = card.generateCard()
-
-    addPlace(placesList, cardElement)
-
-    card.checkEmptyPlacesList() 
+    const renderedCard = new Section({
+        items: [{
+            name: placeInputName.value, 
+            link: placeInputPic.value
+        }],
+        renderer: (item) => {
+            const card = new Card(item.name, item.link, cardTemplate)
+            const cardElement = card.generateCard()
+            renderedCard.addItem(cardElement)
+            // проверяет, есть ли в списке карточки, если нет, то делает видимой надпись о пустом списке
+            card.checkEmptyPlacesList() 
+        },
+    },
+    placesListSelector
+    )
+    renderedCard.renderItems()
 
     popupToggle()
 }
