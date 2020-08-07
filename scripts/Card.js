@@ -1,8 +1,5 @@
 import {openImgPopup, placesList} from './index.js'
 
-//для надписи о том, что все карточки удалены
-const emptyList = document.querySelector('.places__empty-list')
-
 // , handleCardClick
 export class Card {
     constructor (cardName, cardImg, cardTemplate) {
@@ -20,6 +17,8 @@ export class Card {
     // проверяет, есть ли в списке картинки, если нет, то делает видимой надпись о пустом списке
     //в placesList всегда есть минимум 1 элемент - надпись о пустом списке
     checkEmptyPlacesList() {
+        const emptyList = document.querySelector('.places__empty-list')
+
         if (placesList.children.length === 1) {
             emptyList.classList.add('places__empty-list_visible')
         } else {
