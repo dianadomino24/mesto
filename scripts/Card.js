@@ -1,7 +1,6 @@
-// import {openImgPopup, placesList} from './index.js'
 import { placesList} from './index.js'
 
-export class Card {
+export default class Card {
     constructor ({cardName, cardImg, cardTemplate, handleCardClick}) {
         this._cardTemplate= cardTemplate;
         this._cardName = cardName;
@@ -13,7 +12,6 @@ export class Card {
         const cardElement = this._cardTemplate.content.cloneNode(true);
         return cardElement;
     }
-
 
     // проверяет, есть ли в списке картинки, если нет, то делает видимой надпись о пустом списке
     //в placesList всегда есть минимум 1 элемент - надпись о пустом списке
@@ -38,7 +36,6 @@ export class Card {
         likeCardButton.classList.toggle('place__like-button_active')
     }
 
-
     _setEventListeners() {
         const likeCardButton = this._element.querySelector('.place__like-button')
         likeCardButton.addEventListener('click', () => { 
@@ -49,7 +46,7 @@ export class Card {
         deleteCardButton.addEventListener('click', (evt) => {
             this._deleteCard(evt)
         })
-
+        //откроет попап с картинкой 
         const imgPopupTrigger = this._element.querySelector('.place__image')
         imgPopupTrigger.addEventListener('click', (evt) => {
             this._handleCardClick(evt)
@@ -61,7 +58,6 @@ export class Card {
         
         this._element.querySelector('.place__image').src = this._cardImg;
         this._element.querySelector('.place__name').textContent = this._cardName;
-        
 
         this._setEventListeners()
 

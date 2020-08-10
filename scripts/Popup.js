@@ -5,7 +5,6 @@ export default class Popup {
     }
     open(){
         this._popup.classList.add('popup_opened')
-        this._handleEscClose()
     }
     //очищает input values 
     _cleanInputValues() {
@@ -21,6 +20,7 @@ export default class Popup {
         document.removeEventListener('keydown', this._keyHandlerEsc)
         
     }
+    //закрвает при нажатии esc
     _handleEscClose() {
         document.addEventListener('keydown', (evt) => {
             if (evt.key === 'Escape') {
@@ -38,7 +38,7 @@ export default class Popup {
         this._closeButton.addEventListener('click', () => {
             this.close()
         })
-
+        this._handleEscClose()
         this._popup.addEventListener('mousedown', (event) => {
             this._closePopupByClickingOverlay(event)
         })

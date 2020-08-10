@@ -3,7 +3,8 @@ const VALID = 0
 const INVALID_EMPTY = 1
 const INVALID_TOOSHORT = 2
 
-//селектор для формы профиля (для проверки кол-ва введенных символов без учета пробелов)(разные требования по кол-ву символов у формы профиля и карточки места)
+//селектор для формы профиля (для проверки кол-ва введенных символов без учета пробелов)
+// (разные требования по кол-ву символов у формы профиля и карточки места)
 const profileFormSelector = 'popup__form_type_profile'
 
 
@@ -67,16 +68,17 @@ export class FormValidator {
         const errorElement = this._findInputError(inputElement)
 
         switch (this._isInputWithoutSpacingInvalid(inputElement)) {
+            //если поле пусто, не считая пробелы
             case INVALID_EMPTY:
                 errorElement.textContent = "Заполните это поле.";
                 errorElement.classList.add(this._errorActiveClass);
                 break;
-
+            //если выбросить пробелы и в поле 1 символ
             case INVALID_TOOSHORT:
                 errorElement.textContent = "Текст должен быть не короче 2 симв. Длина текста сейчас: 1 символ.";
                 errorElement.classList.add(this._errorActiveClass);
                 break;
-
+            //если без пробелов в поле 2 символа, то проверим их валидность
             case VALID:
                 if (!inputElement.validity.valid) {
                     this._showInputError(inputElement, inputElement.validationMessage);
@@ -96,7 +98,7 @@ export class FormValidator {
             return !inputElement.validity.valid || this._isInputWithoutSpacingInvalid(inputElement)})
     }
 
-    //(раз)блокирует кнопку submit
+    //(раз)блокирует кнопку submit, если есть невалидные инпуты
     _toggleButtonState() {
         if (this.hasInvalidInput()) {
             this._buttonElement.classList.add(this._inactiveButtonClass)
