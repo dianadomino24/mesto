@@ -1,11 +1,12 @@
-import {openImgPopup, placesList} from './index.js'
+// import {openImgPopup, placesList} from './index.js'
+import { placesList} from './index.js'
 
-// , handleCardClick
 export class Card {
-    constructor (cardName, cardImg, cardTemplate) {
+    constructor ({cardName, cardImg, cardTemplate, handleCardClick}) {
         this._cardTemplate= cardTemplate;
         this._cardName = cardName;
         this._cardImg = cardImg;
+        this._handleCardClick = handleCardClick;
 	}
 
     _getTemplate() {
@@ -37,9 +38,6 @@ export class Card {
         likeCardButton.classList.toggle('place__like-button_active')
     }
 
-    // _openImgPopup(evt) {
-    //     openImgPopup(evt) 
-    // }
 
     _setEventListeners() {
         const likeCardButton = this._element.querySelector('.place__like-button')
@@ -52,11 +50,9 @@ export class Card {
             this._deleteCard(evt)
         })
 
-        // открывает попап с увеличенным изображением и подписью
-        const imgTrigger = this._element.querySelector('.place__image')
-        imgTrigger.addEventListener('click', (evt) => {
-            openImgPopup(evt)
-            // this._openImgPopup(evt)
+        const imgPopupTrigger = this._element.querySelector('.place__image')
+        imgPopupTrigger.addEventListener('click', (evt) => {
+            this._handleCardClick(evt)
         })
     }
 
