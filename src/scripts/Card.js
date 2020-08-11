@@ -1,4 +1,4 @@
-import { placesList} from '../src/index.js'
+import { placesList} from '../index.js'
 
 export default class Card {
     constructor ({cardName, cardImg, cardTemplate, handleCardClick}) {
