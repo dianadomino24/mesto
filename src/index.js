@@ -1,4 +1,4 @@
-import '../pages/index.css'
+import './styles/index.css'
 
 import Section from '../scripts/Section.js'
 import Card from '../scripts/Card.js'
