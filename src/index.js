@@ -137,7 +137,6 @@ function handleCardClick(cardName, cardImg) {
 
 //добавляет новые карточки при сабмите формы с местами
 function placeFormSubmitHandler () {
-    console.log('j')
     const cardFromForm = cardCreate(
         [{
             name: placeInputName.value, 
