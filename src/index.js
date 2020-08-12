@@ -13,8 +13,8 @@ const profileEditButton = document.querySelector('.profile__edit-button')
 const inputName = document.querySelector('.popup__input_type_name')
 const inputJob = document.querySelector('.popup__input_type_job')
 
-export const placesListSelector = '.places__list'
-export const imgPopup = document.querySelector('.popup_type_picture-zoom')
+const placesListSelector = '.places__list'
+const imgPopup = document.querySelector('.popup_type_picture-zoom')
 
 const placeForm = document.querySelector('.popup__form_type_place')
 const placeInputName = placeForm.querySelector('.popup__input_type_place-name')
@@ -39,28 +39,55 @@ const formSelectorsObj = {
     controlSelector: '.popup__label',
 }
 
+//кейсы для определения направления добавления карточек
+const PREPEND = 1
+const APPEND = 2 
+
 //отвечает за управление отображением информации о пользователе на странице
 const userInfoEx = new UserInfo({name: profileNameSelector, job: profileJobSelector})
 
-// добавит начальные карточки из массива (initialCards в utils.js)
-const initialCardsList = new Section({
-    items: initialCardsArr,
-    renderer: (item) => {
-        const card = new Card({
-            cardName: item.name, 
-            cardImg: item.link, 
-            cardTemplate, 
-            handleCardClick
-        })
+//создает,добавлет в разметку и возвращает карточку места либо из начального массива, либо из формы
+function cardCreate (renderedArr, direction) {
+    //добавляет созданную карточку в разметку стр
+    const renderedCard = new Section({
+        items: renderedArr,
+        renderer: (item) => {
+            //создает карточку
+            const card = new Card({
+                cardName: item.name, 
+                cardImg: item.link, 
+                cardTemplate, 
+                //вызовет открытие попапа с картинкой
+                handleCardClick
+            })
 
-        const cardElement = card.generateCard()
-        initialCardsList.addItem(cardElement)
+            const cardElement = card.generateCard()
+            //определит, в каком порядке добавлять карточки
+            switch (direction) {
+                case PREPEND:
+                    renderedCard.addItemPrepend(cardElement);
+                    break;
+                case APPEND: 
+                    renderedCard.addItemAppend(cardElement)
+                    break
+                default:
+                    alert( "error" );
+            }
+            
+            // проверяет, есть ли в списке карточки, если нет, то делает видимой надпись о пустом списке
+            card.checkEmptyPlacesList() 
+        },
     },
-},
-placesListSelector
-) 
+    placesListSelector
+    )
+    return renderedCard
+}
 
+// добавит начальные карточки из массива (initialCards в utils.js)
+const initialCardsList = cardCreate(initialCardsArr, APPEND)
 initialCardsList.renderItems()
+
+
 
 //при нажатии на кнопку редакт-я профиля:
 // запускает валидацию, создает экземпляр попапа с формой, 
@@ -102,7 +129,7 @@ profileEditButton.addEventListener('click', () => {
 
 //при клике по картинке создаст экземпл попапа с картинкой, откроет его и поставит прослушки
 function handleCardClick(cardName, cardImg) {
-    const popupWithImgEx = new PopupWithImage(cardName, cardImg, '.popup_type_picture-zoom')
+    const popupWithImgEx = new PopupWithImage(cardName, cardImg, '.popup_type_picture-zoom', imgPopup)
     popupWithImgEx.open()
     popupWithImgEx.setEventListeners()
 }
@@ -110,31 +137,14 @@ function handleCardClick(cardName, cardImg) {
 
 //добавляет новые карточки при сабмите формы с местами
 function placeFormSubmitHandler () {
-    //добавляет созданную карточку в разметку стр
-    const renderedCard = new Section({
-        items: [{
+    console.log('j')
+    const cardFromForm = cardCreate(
+        [{
             name: placeInputName.value, 
             link: placeInputPic.value
         }],
-        renderer: (item) => {
-            //создает карточку
-            const card = new Card({
-                cardName: item.name, 
-                cardImg: item.link, 
-                cardTemplate, 
-                //вызовет открытие попапа с картинкой
-                handleCardClick
-            })
-
-            const cardElement = card.generateCard()
-            renderedCard.addItem(cardElement)
-            // проверяет, есть ли в списке карточки, если нет, то делает видимой надпись о пустом списке
-            card.checkEmptyPlacesList() 
-        },
-    },
-    placesListSelector
-    )
-    renderedCard.renderItems()
+        PREPEND)
+    cardFromForm.renderItems()
 }
 
 //при нажатии на кнопку добавления места:
