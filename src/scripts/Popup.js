@@ -4,17 +4,14 @@ export default class Popup {
         this._closeButton = this._popup.querySelector('.popup__close-button')
     }
     open(){
+        this._formElement = this._popup.querySelector('.popup__form')
+        if (this._formElement) {
+            this._formElement.reset()
+        } 
         this._popup.classList.add('popup_opened')
     }
-    //очищает input values 
-    _cleanInputValues() {
-        let inputs = this._popup.querySelectorAll('.input')
-        if (inputs) {
-            inputs.forEach( input => {input.value = ''})
-        }
-    }
+
     close() {
-        this._cleanInputValues()
         this._popup.classList.remove('popup_opened')
         //  убирает прослушку Esc
         document.removeEventListener('keydown', this._keyHandlerEsc)

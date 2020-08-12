@@ -13,8 +13,6 @@ const profileEditButton = document.querySelector('.profile__edit-button')
 const inputName = document.querySelector('.popup__input_type_name')
 const inputJob = document.querySelector('.popup__input_type_job')
 
-//для проверки пустого списка карточек (при удаленни всех)
-export const placesList = document.querySelector('.places__list')
 export const placesListSelector = '.places__list'
 export const imgPopup = document.querySelector('.popup_type_picture-zoom')
 
@@ -68,11 +66,6 @@ initialCardsList.renderItems()
 // запускает валидацию, создает экземпляр попапа с формой, 
 // очищает уведомл об ошибках, открывает попап, разблокирует кнопку сабмита и ставит прослушки
 profileEditButton.addEventListener('click', () => {
-    //при открытии попапа редактирования профиля заполняет values инпутов данными из профиля
-    const profileInfo = userInfoEx.getUserInfo()
-    inputName.value = profileInfo.name
-    inputJob.value = profileInfo.job
-
     //валидирует форму
     const formValidator = new FormValidator(formSelectorsObj, profileForm) 
     formValidator.enableValidation()
@@ -94,6 +87,11 @@ profileEditButton.addEventListener('click', () => {
 
     popupWithFormEx.open()
 
+    //при открытии попапа редактирования профиля заполняет values инпутов данными из профиля
+    const profileInfo = userInfoEx.getUserInfo()
+    inputName.value = profileInfo.name
+    inputJob.value = profileInfo.job
+
     //разблокирует кнопку сабмита у попапа профиля
     popupProfile.querySelector('.popup__save-button').classList.remove('popup__save-button_disabled')
 
@@ -103,8 +101,8 @@ profileEditButton.addEventListener('click', () => {
 
 
 //при клике по картинке создаст экземпл попапа с картинкой, откроет его и поставит прослушки
-function handleCardClick(evt) {
-    const popupWithImgEx = new PopupWithImage(evt, '.popup_type_picture-zoom')
+function handleCardClick(cardName, cardImg) {
+    const popupWithImgEx = new PopupWithImage(cardName, cardImg, '.popup_type_picture-zoom')
     popupWithImgEx.open()
     popupWithImgEx.setEventListeners()
 }

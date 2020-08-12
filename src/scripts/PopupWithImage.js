@@ -2,16 +2,14 @@ import Popup from './Popup.js'
 import {imgPopup} from '../index.js'
 
 export default class PopupWithImage extends Popup {
-    constructor(evt, popupSelector) {
+    constructor(cardName, cardImg, popupSelector) {
         super(popupSelector);
-        this._currentImgTrigger = evt.target;
+        this._cardName = cardName;
+        this._cardImg = cardImg;
     }
     open() {
-        const imgName = this._currentImgTrigger.closest('.place').querySelector('.place__name').textContent
-        const imgSrc = this._currentImgTrigger.src
-        
-        imgPopup.querySelector('.picture-zoom__title').textContent = imgName
-        imgPopup.querySelector('.picture-zoom__img').src = imgSrc
+        imgPopup.querySelector('.picture-zoom__title').textContent = this._cardName
+        imgPopup.querySelector('.picture-zoom__img').src = this._cardImg
 
         super.open();
     }

@@ -1,5 +1,3 @@
-import { placesList} from '../index.js'
-
 export default class Card {
     constructor ({cardName, cardImg, cardTemplate, handleCardClick}) {
         this._cardTemplate= cardTemplate;
@@ -16,7 +14,10 @@ export default class Card {
     // проверяет, есть ли в списке картинки, если нет, то делает видимой надпись о пустом списке
     //в placesList всегда есть минимум 1 элемент - надпись о пустом списке
     checkEmptyPlacesList() {
+        //надпись о пустом списке
         const emptyList = document.querySelector('.places__empty-list')
+        //список карточек
+        const placesList = document.querySelector('.places__list')
 
         if (placesList.children.length === 1) {
             emptyList.classList.add('places__empty-list_visible')
@@ -48,8 +49,8 @@ export default class Card {
         })
         //откроет попап с картинкой 
         const imgPopupTrigger = this._element.querySelector('.place__image')
-        imgPopupTrigger.addEventListener('click', (evt) => {
-            this._handleCardClick(evt)
+        imgPopupTrigger.addEventListener('click', () => {
+            this._handleCardClick(this._cardName, this._cardImg)
         })
     }
 
