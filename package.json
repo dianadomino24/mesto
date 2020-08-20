@@ -4,7 +4,7 @@
   "description": "css, html, javascript, OOP, webpack",
   "main": "index.js",
   "scripts": {
-    "build": "rm -rf dist && webpack",
+    "build": "rm -rf ./dist && webpack",
     "dev": "webpack-dev-server --open --watch"
   },
   "repository": {
@@ -32,7 +32,7 @@
     "css-loader": "^4.2.1",
     "cssnano": "^4.1.10",
     "file-loader": "^6.0.0",
-    "html-loader": "^1.1.0",
+    "html-loader": "^1.2.1",
     "html-webpack-plugin": "^4.3.0",
     "mini-css-extract-plugin": "^0.10.0",
     "postcss-loader": "^3.0.0",

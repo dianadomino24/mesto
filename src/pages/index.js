@@ -1,12 +1,12 @@
-import './styles/index.css'
+import './index.css'
 
-import Section from './scripts/Section.js'
-import Card from './scripts/Card.js'
-import {cleanInputErrors, FormValidator} from './scripts/FormValidator.js'
-import {initialCardsArr} from './scripts/utils.js'
-import UserInfo from './scripts/UserInfo.js'
-import PopupWithForm from './scripts/PopupWithForm.js'
-import PopupWithImage from './scripts/PopupWithImage.js'
+import Section from '../components/Section.js'
+import Card from '../components/Card.js'
+import {cleanInputErrors, FormValidator} from '../components/FormValidator.js'
+import {initialCardsArr} from '../components/utils.js'
+import UserInfo from '../components/UserInfo.js'
+import PopupWithForm from '../components/PopupWithForm.js'
+import PopupWithImage from '../components/PopupWithImage.js'
 
 
 const profileEditButton = document.querySelector('.profile__edit-button')
