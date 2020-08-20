@@ -53,7 +53,7 @@ function setInintialUserInfo() {
         .then(res => res.json())
         .then((userData) => {
             userInfoEx.setUserInfo(userData)
-    });
+        });
 } 
 
 setInintialUserInfo()
@@ -99,10 +99,20 @@ function cardCreate (renderedArr, direction) {
     return renderedCard
 }
 
-// добавит начальные карточки из массива (initialCards в utils.js)
-const initialCardsList = cardCreate(initialCardsArr, APPEND)
-initialCardsList.renderItems()
-
+// добавит начальные карточки с сервера
+function renderInitialCards () {
+    fetch('https://mesto.nomoreparties.co/v1/cohort-14/cards', {
+        headers: {
+            authorization: '3829caf2-6683-412f-9e00-d0870fcd1817'
+        }
+        })
+        .then(res => res.json())
+        .then((cardsList) => {
+            const initialCardsList = cardCreate(cardsList, APPEND)
+            initialCardsList.renderItems()
+        });
+}
+renderInitialCards()
 
 
 //при нажатии на кнопку редакт-я профиля:

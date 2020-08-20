@@ -4,7 +4,7 @@ export default class UserInfo {
         this._profileJob = document.querySelector(userDataSelectors.about);
     }
     getUserInfo() {
-        return {name: this._profileName.textContent, job: this._profileJob.textContent}
+        return {name: this._profileName.textContent, about: this._profileJob.textContent}
     }
     setUserInfo(newUserData) {
         this._profileName.textContent = newUserData.name;
