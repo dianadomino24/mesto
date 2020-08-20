@@ -39,12 +39,28 @@ const formSelectorsObj = {
     controlSelector: '.popup__label',
 }
 
+
+//отвечает за управление отображением информации о пользователе на странице
+const userInfoEx = new UserInfo({name: profileNameSelector, about: profileJobSelector})
+
+//при загрузке стр запрашивает у сервера имя и инф о пользователе и отображает их в профиле
+function setInintialUserInfo() {
+    fetch('https://mesto.nomoreparties.co/v1/cohort-14/users/me', {
+        headers: {
+            authorization: '3829caf2-6683-412f-9e00-d0870fcd1817'
+        }
+        })
+        .then(res => res.json())
+        .then((userData) => {
+            userInfoEx.setUserInfo(userData)
+    });
+} 
+
+setInintialUserInfo()
+
 //кейсы для определения направления добавления карточек
 const PREPEND = 1
 const APPEND = 2 
-
-//отвечает за управление отображением информации о пользователе на странице
-const userInfoEx = new UserInfo({name: profileNameSelector, job: profileJobSelector})
 
 //создает,добавлет в разметку и возвращает карточку места либо из начального массива, либо из формы
 function cardCreate (renderedArr, direction) {
@@ -105,7 +121,7 @@ profileEditButton.addEventListener('click', () => {
         //если инпуты валидны
         if (!formValidator.hasInvalidInput()) {
              //установит имя и профессию из формы в профиль (если введены values с пробелами, то обрежем лишние пробелы)
-            userInfoEx.setUserInfo({name: inputName.value.trim(), job: inputJob.value.trim()})
+            userInfoEx.setUserInfo({name: inputName.value.trim(), about: inputJob.value.trim()})
             popupWithFormEx.close()
         }
     })
@@ -117,7 +133,7 @@ profileEditButton.addEventListener('click', () => {
     //при открытии попапа редактирования профиля заполняет values инпутов данными из профиля
     const profileInfo = userInfoEx.getUserInfo()
     inputName.value = profileInfo.name
-    inputJob.value = profileInfo.job
+    inputJob.value = profileInfo.about
 
     //разблокирует кнопку сабмита у попапа профиля
     popupProfile.querySelector('.popup__save-button').classList.remove('popup__save-button_disabled')
