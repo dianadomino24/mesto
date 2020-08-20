@@ -44,7 +44,7 @@ const formSelectorsObj = {
 const userInfoEx = new UserInfo({name: profileNameSelector, about: profileJobSelector})
 
 //при загрузке стр запрашивает у сервера имя и инф о пользователе и отображает их в профиле
-function setInintialUserInfo() {
+function setServerUserInfo() {
     fetch('https://mesto.nomoreparties.co/v1/cohort-14/users/me', {
         headers: {
             authorization: '3829caf2-6683-412f-9e00-d0870fcd1817'
@@ -56,7 +56,7 @@ function setInintialUserInfo() {
         });
 } 
 
-setInintialUserInfo()
+setServerUserInfo()
 
 //кейсы для определения направления добавления карточек
 const PREPEND = 1
@@ -130,8 +130,20 @@ profileEditButton.addEventListener('click', () => {
         () => {
         //если инпуты валидны
         if (!formValidator.hasInvalidInput()) {
-             //установит имя и профессию из формы в профиль (если введены values с пробелами, то обрежем лишние пробелы)
-            userInfoEx.setUserInfo({name: inputName.value.trim(), about: inputJob.value.trim()})
+            //отправит имя и профессию из формы на сервер 
+            fetch('https://mesto.nomoreparties.co/v1/cohort-14/users/me', {
+                method: 'PATCH',
+                headers: {
+                    authorization: '3829caf2-6683-412f-9e00-d0870fcd1817',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: `${inputName.value.trim()}`,
+                    about: `${inputJob.value.trim()}`
+                })
+            });
+            //установим новые данные профиля (если введены values с пробелами, то обрежем лишние пробелы)
+            userInfoEx.setUserInfo({name: inputName.value.trim(), about: inputJob.value.trim()}) 
             popupWithFormEx.close()
         }
     })

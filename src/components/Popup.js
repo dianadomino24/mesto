@@ -6,7 +6,7 @@ export default class Popup {
     }
     open(){ 
         // if (this._formElement) {
-            this._formElement.reset()
+            // this._formElement.reset()
         // } 
         this._popup.classList.add('popup_opened')
     }
