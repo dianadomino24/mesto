@@ -175,6 +175,19 @@ function handleCardClick(cardName, cardImg) {
 
 //добавляет новые карточки при сабмите формы с местами
 function placeFormSubmitHandler () {
+    // отправит данные создаваемой карточки на сервер
+    fetch('https://mesto.nomoreparties.co/v1/cohort-14/cards', {
+                method: 'POST',
+                headers: {
+                    authorization: '3829caf2-6683-412f-9e00-d0870fcd1817',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: `${placeInputName.value}`,
+                    link: `${placeInputPic.value}`
+                })
+            });
+    //создаст карточку 
     const cardFromForm = cardCreate(
         [{
             name: placeInputName.value, 
