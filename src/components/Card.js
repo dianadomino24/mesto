@@ -1,9 +1,10 @@
 export default class Card {
-    constructor ({cardName, cardImg, cardTemplate, handleCardClick}) {
+    constructor ({cardName, cardImg, cardTemplate, handleCardClick, handleCardDelete}) {
         this._cardTemplate= cardTemplate;
         this._cardName = cardName;
         this._cardImg = cardImg;
         this._handleCardClick = handleCardClick;
+        this._handleCardDelete = handleCardDelete;
 	}
 
     _getTemplate() {
@@ -29,7 +30,10 @@ export default class Card {
             emptyList.classList.remove('places__empty-list_visible')
         }
     }
-
+    // заблокирует кнопку удаления карточки для чужих (не моих) карточек
+    disableDelete() {
+        this._element.querySelector('.place__delete-button').classList.add('place__delete-button_disabled')
+    }
     _deleteCard(evt) {
         const place = evt.target.closest('.places__item');
         place.remove()
@@ -49,6 +53,8 @@ export default class Card {
         
         const deleteCardButton = this._element.querySelector('.place__delete-button')
         deleteCardButton.addEventListener('click', (evt) => {
+            //вызывает удаление карточки с сервера
+            // this._handleCardDelete(this._cardName, this._cardImg)
             this._deleteCard(evt)
         })
         //откроет попап с картинкой 

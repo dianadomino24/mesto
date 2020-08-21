@@ -3,7 +3,7 @@ import './index.css'
 import Section from '../components/Section.js'
 import Card from '../components/Card.js'
 import {cleanInputErrors, FormValidator} from '../components/FormValidator.js'
-import {initialCardsArr} from '../components/utils.js'
+// import {initialCardsArr} from '../components/utils.js'
 import UserInfo from '../components/UserInfo.js'
 import PopupWithForm from '../components/PopupWithForm.js'
 import PopupWithImage from '../components/PopupWithImage.js'
@@ -61,9 +61,12 @@ setServerUserInfo()
 //кейсы для определения направления добавления карточек
 const PREPEND = 1
 const APPEND = 2 
+// кейсы для определения, кем добавлена карточка
+const MINE = 3
+const THEIRS = 4
 
 //создает,добавлет в разметку и возвращает карточку места либо из начального массива, либо из формы
-function cardCreate (renderedArr, direction) {
+function cardCreate (renderedArr, direction, whose) {
     //добавляет созданную карточку в разметку стр
     const renderedCard = new Section({
         items: renderedArr,
@@ -74,10 +77,23 @@ function cardCreate (renderedArr, direction) {
                 cardImg: item.link, 
                 cardTemplate, 
                 //вызовет открытие попапа с картинкой
-                handleCardClick
+                handleCardClick,
+
+                handleCardDelete
             })
 
             const cardElement = card.generateCard()
+            //определит, чьи карточки и выкл кнопку удаления у чужих
+            switch(whose) {
+                case MINE:
+                    break
+                case THEIRS: 
+                    card.disableDelete()
+                    break
+                default:
+                    alert( "error" );
+            }
+
             //определит, в каком порядке добавлять карточки
             switch (direction) {
                 case PREPEND:
@@ -90,6 +106,7 @@ function cardCreate (renderedArr, direction) {
                     alert( "error" );
             }
             
+            
             // проверяет, есть ли в списке карточки, если нет, то делает видимой надпись о пустом списке
             card.checkEmptyPlacesList() 
         },
@@ -100,17 +117,38 @@ function cardCreate (renderedArr, direction) {
 }
 
 // добавит начальные карточки с сервера
-function renderInitialCards () {
-    fetch('https://mesto.nomoreparties.co/v1/cohort-14/cards', {
+function renderInitialCards() {
+    // запросит у сервера мой id 
+    fetch('https://mesto.nomoreparties.co/v1/cohort-14/users/me', {
         headers: {
             authorization: '3829caf2-6683-412f-9e00-d0870fcd1817'
         }
         })
         .then(res => res.json())
-        .then((cardsList) => {
-            const initialCardsList = cardCreate(cardsList, APPEND)
-            initialCardsList.renderItems()
-        });
+        .then((userData) => {
+            //будет хранить мой id  
+            const MyUserId = userData._id
+            // запросит начальные карточки с сервера
+            fetch('https://mesto.nomoreparties.co/v1/cohort-14/cards', {
+                headers: {
+                    authorization: '3829caf2-6683-412f-9e00-d0870fcd1817'
+                }
+                })
+            .then(res => res.json())
+            .then((cardsList) => {
+                // для каждой карточки запросит id хозяина и сравнит с моим, 
+                // создаст карточку, учитывая состояние кнопки удаления карточки
+                cardsList.forEach((card) => {            
+                    if (card.owner._id === MyUserId) {
+                        const myCard = cardCreate([card], APPEND, MINE)
+                        myCard.renderItems()
+                    } else {
+                        const initialCard = cardCreate([card], APPEND, THEIRS)
+                        initialCard.renderItems()
+                    }
+                })
+            })
+        })
 }
 renderInitialCards()
 
@@ -172,6 +210,10 @@ function handleCardClick(cardName, cardImg) {
     popupWithImgEx.setEventListeners()
 }
 
+function handleCardDelete(cardName, cardImg) {
+
+}
+
 
 //добавляет новые карточки при сабмите формы с местами
 function placeFormSubmitHandler () {
@@ -193,7 +235,7 @@ function placeFormSubmitHandler () {
             name: placeInputName.value, 
             link: placeInputPic.value
         }],
-        PREPEND)
+        PREPEND, MINE)
     cardFromForm.renderItems()
 }
 
