@@ -119,6 +119,15 @@ function cardCreate (renderedArr, direction, whose) {
     return renderedCard
 }
 
+// класс для карточек с сервера
+const serverCards = new Api ({
+    baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-14/cards',
+    headers: {
+        authorization: '3829caf2-6683-412f-9e00-d0870fcd1817',
+        'Content-Type': 'application/json'
+    }
+})
+
 // добавит начальные карточки с сервера
 function renderInitialCards() {
     // запросит у сервера мой id 
@@ -127,12 +136,6 @@ function renderInitialCards() {
         //будет хранить мой id  
         const MyUserId = userData._id
         // запросит начальные карточки с сервера
-        const serverCards = new Api ({
-            baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-14/cards',
-            headers: {
-                authorization: '3829caf2-6683-412f-9e00-d0870fcd1817'
-            }
-        })
         serverCards.getItems()
         .then((cardsList) => {
             // для каждой карточки запросит id хозяина и сравнит с моим, 
@@ -153,41 +156,6 @@ function renderInitialCards() {
     })
 }
 renderInitialCards()
-
-// function renderInitialCards() {
-//     // запросит у сервера мой id 
-//     fetch('https://mesto.nomoreparties.co/v1/cohort-14/users/me', {
-//         headers: {
-//             authorization: '3829caf2-6683-412f-9e00-d0870fcd1817'
-//         }
-//         })
-//         .then(res => res.json())
-//         .then((userData) => {
-//             //будет хранить мой id  
-//             const MyUserId = userData._id
-//             // запросит начальные карточки с сервера
-//             fetch('https://mesto.nomoreparties.co/v1/cohort-14/cards', {
-//                 headers: {
-//                     authorization: '3829caf2-6683-412f-9e00-d0870fcd1817'
-//                 }
-//                 })
-//             .then(res => res.json())
-//             .then((cardsList) => {
-//                 // для каждой карточки запросит id хозяина и сравнит с моим, 
-//                 // создаст карточку, учитывая состояние кнопки удаления карточки
-//                 cardsList.forEach((card) => {            
-//                     if (card.owner._id === MyUserId) {
-//                         const myCard = cardCreate([card], APPEND, MINE)
-//                         myCard.renderItems()
-//                     } else {
-//                         const initialCard = cardCreate([card], APPEND, THEIRS)
-//                         initialCard.renderItems()
-//                     }
-//                 })
-//             })
-//         })
-// }
-
 
 
 //при нажатии на кнопку редакт-я профиля:
@@ -253,19 +221,15 @@ function handleCardDelete(cardName, cardImg) {
 
 
 //добавляет новые карточки при сабмите формы с местами
+// отправит данные создаваемой карточки на сервер
 function placeFormSubmitHandler () {
-    // отправит данные создаваемой карточки на сервер
-    fetch('https://mesto.nomoreparties.co/v1/cohort-14/cards', {
-                method: 'POST',
-                headers: {
-                    authorization: '3829caf2-6683-412f-9e00-d0870fcd1817',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: `${placeInputName.value}`,
-                    link: `${placeInputPic.value}`
-                })
-            });
+    serverCards.createItem({
+        name: placeInputName.value,
+        link: placeInputPic.value})
+        .catch((err) => {
+            console.log(err)
+        })
+        
     //создаст карточку 
     const cardFromForm = cardCreate(
         [{
@@ -275,6 +239,30 @@ function placeFormSubmitHandler () {
         PREPEND, MINE)
     cardFromForm.renderItems()
 }
+
+
+// function placeFormSubmitHandler () {
+//     // отправит данные создаваемой карточки на сервер
+//     fetch('https://mesto.nomoreparties.co/v1/cohort-14/cards', {
+//                 method: 'POST',
+//                 headers: {
+//                     authorization: '3829caf2-6683-412f-9e00-d0870fcd1817',
+//                     'Content-Type': 'application/json'
+//                 },
+//                 body: JSON.stringify({
+//                     name: `${placeInputName.value}`,
+//                     link: `${placeInputPic.value}`
+//                 })
+//             });
+//     //создаст карточку 
+//     const cardFromForm = cardCreate(
+//         [{
+//             name: placeInputName.value, 
+//             link: placeInputPic.value
+//         }],
+//         PREPEND, MINE)
+//     cardFromForm.renderItems()
+// }
 
 //при нажатии на кнопку добавления места:
 // запускает валидацию, создает экземпляр попапа с формой, 
