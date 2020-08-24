@@ -40,6 +40,7 @@ export default class Card {
         place.remove()
         this.checkEmptyPlacesList()
         this._element = null
+        this._handleDeleteIconClick(evt)
     }
 
     _likeCard(likeCardButton) {

@@ -74,11 +74,13 @@ function cardCreate (renderedArr, direction, whose) {
     const renderedCard = new Section({
         items: renderedArr,
         renderer: (item) => {
+            console.log(item)
             //создает карточку
             const card = new Card({
                 data: {
                     name: item.name, 
                     link: item.link, 
+                    _id: item._id
                 },
                 //вызовет открытие попапа с картинкой
                 handleCardClick,
@@ -113,7 +115,6 @@ function cardCreate (renderedArr, direction, whose) {
                     alert( "error" );
             }
             
-            
             // проверяет, есть ли в списке карточки, если нет, то делает видимой надпись о пустом списке
             card.checkEmptyPlacesList() 
         },
@@ -139,6 +140,7 @@ function renderInitialCards() {
     .then((userData) => {
         //будет хранить мой id  
         const MyUserId = userData._id
+        
         // запросит начальные карточки с сервера
         serverCards.getItems()
         .then((cardsList) => {
@@ -160,7 +162,6 @@ function renderInitialCards() {
     })
 }
 renderInitialCards()
-
 
 //при нажатии на кнопку редакт-я профиля:
 // запускает валидацию, создает экземпляр попапа с формой, 
@@ -219,32 +220,28 @@ function handleCardClick(cardName, cardImg) {
     popupWithImgEx.setEventListeners()
 }
 
-function handleDeleteIconClick(cardName, cardImg) {
-
+function handleDeleteIconClick(evt) {
+    console.log(evt.target.closest)
 }
 
 function handleLikeClick() {
 
 }
 
-//добавляет новые карточки при сабмите формы с местами
-// отправит данные создаваемой карточки на сервер
+//  при сабмите формы с местами отправит данные создаваемой карточки на сервер, 
+// в ответе получит созданную сервером карточку 
+// и добавит ее в разметку
 function placeFormSubmitHandler () {
     serverCards.createItem({
         name: placeInputName.value,
         link: placeInputPic.value})
-        .catch((err) => {
-            console.log(err)
+    .then(card => {
+        const cardFromForm = cardCreate([card], PREPEND, MINE)
+        cardFromForm.renderItems()
         })
-        
-    //создаст карточку 
-    const cardFromForm = cardCreate(
-        [{
-            name: placeInputName.value, 
-            link: placeInputPic.value
-        }],
-        PREPEND, MINE)
-    cardFromForm.renderItems()
+    .catch((err) => {
+        console.log(err)
+    })
 }
 
 
