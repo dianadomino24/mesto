@@ -1,10 +1,11 @@
 export default class Card {
-    constructor ({cardName, cardImg, cardTemplate, handleCardClick, handleCardDelete}) {
+    constructor ({data, handleCardClick, handleLikeClick, handleDeleteIconClick}, cardTemplate) {
         this._cardTemplate= cardTemplate;
-        this._cardName = cardName;
-        this._cardImg = cardImg;
+        this._cardName = data.name;
+        this._cardImg = data.link;
         this._handleCardClick = handleCardClick;
-        this._handleCardDelete = handleCardDelete;
+        this._handleDeleteIconClick = handleDeleteIconClick;
+        this._handleLikeClick = handleLikeClick;
 	}
 
     _getTemplate() {
@@ -54,7 +55,7 @@ export default class Card {
         const deleteCardButton = this._element.querySelector('.place__delete-button')
         deleteCardButton.addEventListener('click', (evt) => {
             //вызывает удаление карточки с сервера
-            // this._handleCardDelete(this._cardName, this._cardImg)
+            // this._handleDeleteIconClick(this._cardName, this._cardImg)
             this._deleteCard(evt)
         })
         //откроет попап с картинкой 

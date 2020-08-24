@@ -76,14 +76,18 @@ function cardCreate (renderedArr, direction, whose) {
         renderer: (item) => {
             //создает карточку
             const card = new Card({
-                cardName: item.name, 
-                cardImg: item.link, 
-                cardTemplate, 
+                data: {
+                    name: item.name, 
+                    link: item.link, 
+                },
                 //вызовет открытие попапа с картинкой
                 handleCardClick,
+    
+                handleLikeClick,
 
-                handleCardDelete
-            })
+                handleDeleteIconClick
+            },
+            cardTemplate)
 
             const cardElement = card.generateCard()
             //определит, чьи карточки и выкл кнопку удаления у чужих
@@ -215,10 +219,13 @@ function handleCardClick(cardName, cardImg) {
     popupWithImgEx.setEventListeners()
 }
 
-function handleCardDelete(cardName, cardImg) {
+function handleDeleteIconClick(cardName, cardImg) {
 
 }
 
+function handleLikeClick() {
+
+}
 
 //добавляет новые карточки при сабмите формы с местами
 // отправит данные создаваемой карточки на сервер
