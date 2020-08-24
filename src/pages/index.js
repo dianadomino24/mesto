@@ -7,6 +7,9 @@ import {cleanInputErrors, FormValidator} from '../components/FormValidator.js'
 import UserInfo from '../components/UserInfo.js'
 import PopupWithForm from '../components/PopupWithForm.js'
 import PopupWithImage from '../components/PopupWithImage.js'
+import PopupWithSubmit from '../components/PopupWithSubmit.js'
+import Api from '../components/Api.js'
+
 
 
 const profileEditButton = document.querySelector('.profile__edit-button')
@@ -44,19 +47,19 @@ const formSelectorsObj = {
 const userInfoEx = new UserInfo({name: profileNameSelector, about: profileJobSelector})
 
 //при загрузке стр запрашивает у сервера имя и инф о пользователе и отображает их в профиле
-function setServerUserInfo() {
-    fetch('https://mesto.nomoreparties.co/v1/cohort-14/users/me', {
-        headers: {
-            authorization: '3829caf2-6683-412f-9e00-d0870fcd1817'
-        }
-        })
-        .then(res => res.json())
-        .then((userData) => {
-            userInfoEx.setUserInfo(userData)
-        });
-} 
-
-setServerUserInfo()
+const setServerUserInfo = new Api({
+    baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-14/users/me',
+    headers:  {
+        authorization: '3829caf2-6683-412f-9e00-d0870fcd1817'
+    }
+})
+setServerUserInfo.getItems()
+.then((userData) => {
+    userInfoEx.setUserInfo(userData)
+})
+.catch((err) => {
+    console.log(err)
+})
 
 //кейсы для определения направления добавления карточек
 const PREPEND = 1
@@ -91,7 +94,7 @@ function cardCreate (renderedArr, direction, whose) {
                     card.disableDelete()
                     break
                 default:
-                    alert( "error" );
+                    alert( "error whose" );
             }
 
             //определит, в каком порядке добавлять карточки
@@ -119,38 +122,72 @@ function cardCreate (renderedArr, direction, whose) {
 // добавит начальные карточки с сервера
 function renderInitialCards() {
     // запросит у сервера мой id 
-    fetch('https://mesto.nomoreparties.co/v1/cohort-14/users/me', {
-        headers: {
-            authorization: '3829caf2-6683-412f-9e00-d0870fcd1817'
-        }
+    setServerUserInfo.getItems()
+    .then((userData) => {
+        //будет хранить мой id  
+        const MyUserId = userData._id
+        // запросит начальные карточки с сервера
+        const serverCards = new Api ({
+            baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-14/cards',
+            headers: {
+                authorization: '3829caf2-6683-412f-9e00-d0870fcd1817'
+            }
         })
-        .then(res => res.json())
-        .then((userData) => {
-            //будет хранить мой id  
-            const MyUserId = userData._id
-            // запросит начальные карточки с сервера
-            fetch('https://mesto.nomoreparties.co/v1/cohort-14/cards', {
-                headers: {
-                    authorization: '3829caf2-6683-412f-9e00-d0870fcd1817'
+        serverCards.getItems()
+        .then((cardsList) => {
+            // для каждой карточки запросит id хозяина и сравнит с моим, 
+            // создаст карточку, учитывая состояние кнопки удаления карточки
+            cardsList.forEach((card) => {            
+                if (card.owner._id === MyUserId) {
+                    const myCard = cardCreate([card], APPEND, MINE)
+                    myCard.renderItems()
+                } else {
+                    const initialCard = cardCreate([card], APPEND, THEIRS)
+                    initialCard.renderItems()
                 }
-                })
-            .then(res => res.json())
-            .then((cardsList) => {
-                // для каждой карточки запросит id хозяина и сравнит с моим, 
-                // создаст карточку, учитывая состояние кнопки удаления карточки
-                cardsList.forEach((card) => {            
-                    if (card.owner._id === MyUserId) {
-                        const myCard = cardCreate([card], APPEND, MINE)
-                        myCard.renderItems()
-                    } else {
-                        const initialCard = cardCreate([card], APPEND, THEIRS)
-                        initialCard.renderItems()
-                    }
-                })
             })
         })
+        .catch((err) => {
+            console.log(err)
+        })
+    })
 }
 renderInitialCards()
+
+// function renderInitialCards() {
+//     // запросит у сервера мой id 
+//     fetch('https://mesto.nomoreparties.co/v1/cohort-14/users/me', {
+//         headers: {
+//             authorization: '3829caf2-6683-412f-9e00-d0870fcd1817'
+//         }
+//         })
+//         .then(res => res.json())
+//         .then((userData) => {
+//             //будет хранить мой id  
+//             const MyUserId = userData._id
+//             // запросит начальные карточки с сервера
+//             fetch('https://mesto.nomoreparties.co/v1/cohort-14/cards', {
+//                 headers: {
+//                     authorization: '3829caf2-6683-412f-9e00-d0870fcd1817'
+//                 }
+//                 })
+//             .then(res => res.json())
+//             .then((cardsList) => {
+//                 // для каждой карточки запросит id хозяина и сравнит с моим, 
+//                 // создаст карточку, учитывая состояние кнопки удаления карточки
+//                 cardsList.forEach((card) => {            
+//                     if (card.owner._id === MyUserId) {
+//                         const myCard = cardCreate([card], APPEND, MINE)
+//                         myCard.renderItems()
+//                     } else {
+//                         const initialCard = cardCreate([card], APPEND, THEIRS)
+//                         initialCard.renderItems()
+//                     }
+//                 })
+//             })
+//         })
+// }
+
 
 
 //при нажатии на кнопку редакт-я профиля:
