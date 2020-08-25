@@ -68,6 +68,10 @@ const APPEND = 2
 const MINE = 3
 const THEIRS = 4
 
+// выяснила, что все мои лайки помечаются сервером таким id,
+// но пока не разобралась, как получить его до рендера карточек и постановки лайка любой из них !!!!!!!!!
+const myLikeId = "6a4f081c3216c2763bffb74c"
+
 //создает,добавлет в разметку и возвращает карточку места либо из начального массива, либо из формы
 function cardCreate (renderedArr, direction, whose) {
     //добавляет созданную карточку в разметку стр
@@ -80,14 +84,16 @@ function cardCreate (renderedArr, direction, whose) {
                     name: item.name, 
                     link: item.link, 
                     _id: item._id,
-                    likes: item.likes
+                    likes: item.likes,
                 },
                 //вызовет открытие попапа с картинкой
                 handleCardClick,
     
                 handleLikeClick,
 
-                handleDeleteIconClick
+                handleDeleteIconClick,
+
+                myLikeId
             },
             cardTemplate)
 
@@ -244,8 +250,21 @@ function handleDeleteIconClick(card, placeEvt) {
     popupWithSubmit.setEventListeners()
 }
 
-function handleLikeClick() {
-
+function handleLikeClick(likeCardButton, card, likeCounter) {
+    // если у карточки уже стоит лайк, удалим его с сервера и из разметки
+    if (likeCardButton.classList.contains('place__like-button_active')) {
+        serverCards.deleteItemViaTitle('likes', card._id)
+        .then((card) => {
+            likeCounter.textContent = card.likes.length
+            likeCardButton.classList.toggle('place__like-button_active')
+        })
+    } else {
+        serverCards.replaceItemViaTitle('likes', card._id)
+        .then((card) => {
+            likeCounter.textContent = card.likes.length
+            likeCardButton.classList.toggle('place__like-button_active')
+        })
+    }
 }
 
 //  при сабмите формы с местами отправит данные создаваемой карточки на сервер, 

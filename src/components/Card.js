@@ -1,10 +1,11 @@
 export default class Card {
-    constructor ({data, handleCardClick, handleLikeClick, handleDeleteIconClick}, cardTemplate) {
+    constructor ({data, handleCardClick, handleLikeClick, handleDeleteIconClick, myLikeId}, cardTemplate) {
         this._cardTemplate= cardTemplate;
         this._cardName = data.name;
         this._cardImg = data.link;
         this._cardId = data._id;
         this._likes = data.likes;
+        this._myLikeId = myLikeId;
         this._data = data
         this._handleCardClick = handleCardClick;
         this._handleDeleteIconClick = handleDeleteIconClick;
@@ -49,14 +50,14 @@ export default class Card {
         this._element = null
     }
 
-    _likeCard(likeCardButton) {
-        likeCardButton.classList.toggle('place__like-button_active')
-    }
+    // _likeCard(likeCardButton) {
+    //     likeCardButton.classList.toggle('place__like-button_active')
+    // }
 
     _setEventListeners() {
         const likeCardButton = this._element.querySelector('.place__like-button')
         likeCardButton.addEventListener('click', () => { 
-            this._likeCard(likeCardButton)
+            this._handleLikeClick(likeCardButton, this._element, this._likeCounter)
         })
         
         const deleteCardButton = this._element.querySelector('.place__delete-button')
@@ -76,12 +77,17 @@ export default class Card {
         this._element.querySelector('.place__image').src = this._cardImg;
         this._element.querySelector('.place__name').textContent = this._cardName;
         this._element._id = this._cardId;
-        this._element.querySelector('.place__like-counter').textContent = this._likes.length
+        this._likeCounter = this._element.querySelector('.place__like-counter')
+        this._likeCounter.textContent = this._likes.length
         this._element.likes = this._likes;
-console.log(this._likes)
+        
+        const likeCardButton = this._element.querySelector('.place__like-button')
+        if (this._likes.some(like => like._id === this._myLikeId)){
+            likeCardButton.classList.toggle('place__like-button_active')
+        }   
+        
         this._setEventListeners()
         return this._element;
     }
 }
-
 

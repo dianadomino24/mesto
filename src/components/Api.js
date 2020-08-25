@@ -29,7 +29,7 @@ export default class Api {
         })
     }
         
-    createItem (item) { // { name: '', src: ''}
+    createItem (item) { 
         return fetch(this.baseUrl, {
         method: 'POST',
         headers: this.headers,
@@ -57,11 +57,11 @@ export default class Api {
                 })
     }
 
-    replaceItem (item) {
-        return fetch(this.baseUrl, {
+    replaceItemViaTitle (title, id) {
+        return fetch(`${this.baseUrl}/${title}/${id}`, {
             method: 'PUT',
             headers: this.headers,
-            body: JSON.stringify(item)
+            // body: JSON.stringify(item)
             })
             .then(res => {
                 if (res.ok) {
@@ -71,6 +71,19 @@ export default class Api {
                 })
     }
 
+    deleteItemViaTitle (title, id){
+        return fetch(`${this.baseUrl}/${title}/${id}`, {
+            method: 'DELETE',
+            headers: this.headers,
+            })
+            .then(res => {
+                if (res.ok) {
+                    return res.json()
+                }
+                return Promise.reject(`Ошибка: ${res.status}`)
+                })
+    }
+    
     // getProfileData() {
 
     // }
