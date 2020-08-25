@@ -74,7 +74,6 @@ function cardCreate (renderedArr, direction, whose) {
     const renderedCard = new Section({
         items: renderedArr,
         renderer: (item) => {
-            console.log(item)
             //создает карточку
             const card = new Card({
                 data: {
@@ -220,8 +219,28 @@ function handleCardClick(cardName, cardImg) {
     popupWithImgEx.setEventListeners()
 }
 
-function handleDeleteIconClick(evt) {
-    console.log(evt.target.closest)
+
+function handleDeleteIconClick(card, placeEvt) {
+    // создает попап с формой подтверждения удаления карточки
+    const popupWithSubmit = new PopupWithSubmit({
+        popupSelector: '.popup_type_card-delete', 
+        item: card,
+        place: placeEvt,
+
+        submitHandler: (card, place) => {
+            // удаляет карточку с сервера
+            return serverCards.deleteItem(card._id)
+            .then(
+                //вызывает удаление карточки из разметки
+                place.remove()
+            )
+            .catch((err) => {
+                console.log(err)
+            })
+        }
+    })
+    popupWithSubmit.open()
+    popupWithSubmit.setEventListeners()
 }
 
 function handleLikeClick() {

@@ -3,6 +3,7 @@ export default class Card {
         this._cardTemplate= cardTemplate;
         this._cardName = data.name;
         this._cardImg = data.link;
+        this._cardId = data._id;
         this._handleCardClick = handleCardClick;
         this._handleDeleteIconClick = handleDeleteIconClick;
         this._handleLikeClick = handleLikeClick;
@@ -36,11 +37,14 @@ export default class Card {
         this._element.querySelector('.place__delete-button').classList.add('place__delete-button_disabled')
     }
     _deleteCard(evt) {
-        const place = evt.target.closest('.places__item');
-        place.remove()
+        //сохраняет дом элемент, который надо будет удалить из разметки
+        const placeEvt = evt.target.closest('.places__item');
+        //вызывает попап с подтверждением удаления
+        this._handleDeleteIconClick(this._element, placeEvt)
+
+        // проверяет, не пустой ли список карточек
         this.checkEmptyPlacesList()
         this._element = null
-        this._handleDeleteIconClick(evt)
     }
 
     _likeCard(likeCardButton) {
@@ -55,9 +59,7 @@ export default class Card {
         
         const deleteCardButton = this._element.querySelector('.place__delete-button')
         deleteCardButton.addEventListener('click', (evt) => {
-            //вызывает удаление карточки с сервера
-            // this._handleDeleteIconClick(this._cardName, this._cardImg)
-            this._deleteCard(evt)
+            this._deleteCard(evt, this._element)
         })
         //откроет попап с картинкой 
         const imgPopupTrigger = this._element.querySelector('.place__image')
@@ -71,9 +73,9 @@ export default class Card {
         
         this._element.querySelector('.place__image').src = this._cardImg;
         this._element.querySelector('.place__name').textContent = this._cardName;
+        this._element._id = this._cardId
 
         this._setEventListeners()
-
         return this._element;
     }
 }
