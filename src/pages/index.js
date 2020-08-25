@@ -79,7 +79,8 @@ function cardCreate (renderedArr, direction, whose) {
                 data: {
                     name: item.name, 
                     link: item.link, 
-                    _id: item._id
+                    _id: item._id,
+                    likes: item.likes
                 },
                 //вызовет открытие попапа с картинкой
                 handleCardClick,

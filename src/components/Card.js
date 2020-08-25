@@ -4,6 +4,8 @@ export default class Card {
         this._cardName = data.name;
         this._cardImg = data.link;
         this._cardId = data._id;
+        this._likes = data.likes;
+        this._data = data
         this._handleCardClick = handleCardClick;
         this._handleDeleteIconClick = handleDeleteIconClick;
         this._handleLikeClick = handleLikeClick;
@@ -73,8 +75,10 @@ export default class Card {
         
         this._element.querySelector('.place__image').src = this._cardImg;
         this._element.querySelector('.place__name').textContent = this._cardName;
-        this._element._id = this._cardId
-
+        this._element._id = this._cardId;
+        this._element.querySelector('.place__like-counter').textContent = this._likes.length
+        this._element.likes = this._likes;
+console.log(this._likes)
         this._setEventListeners()
         return this._element;
     }
