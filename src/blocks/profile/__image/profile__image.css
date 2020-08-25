@@ -2,10 +2,10 @@
   max-width: 120px;
   width: 100%;
   min-height: 120px;
-  background-image: url('../../../images/Avatar.jpg');
+  background-image: url('');
   background-position: center;
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: cover;
   margin-right: 30px;
   border-radius: 50%;
   position: relative;

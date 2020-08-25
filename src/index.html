@@ -100,6 +100,21 @@
       </form>
     </div>
   </section>
+  <section class="popup popup_type_edit-avatar" data-popup-name="popup_type_edit-avatar">
+    <div class="popup__container"> 
+      <button class="link popup__close-button"></button>
+      <form class="popup__form popup__form_type_avatar" novalidate> 
+        <h2 class="popup__title">Обновить аватар</h2>
+        <fieldset class="popup__fieldset">
+          <label class="popup__label">
+            <input type="url" name="avatar" id="avatar" placeholder="Ссылка на картинку" class="input popup__input popup__input_type_avatar" required>
+            <span class='popup__input-error'></span>
+          </label>
+          <button class="link popup__save-button popup__save-button_type_avatar" type="submit">Сохранить</button>
+        </fieldset>
+      </form>
+    </div>
+  </section>
 </div>
 <template class="place-template">
   <li class="places__item">

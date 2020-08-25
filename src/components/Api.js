@@ -56,6 +56,21 @@ export default class Api {
                 return Promise.reject(`Ошибка: ${res.status}`)
                 })
     }
+    
+    changeItemViaTitle (item, title) {
+        return fetch(`${this.baseUrl}/${title}`, {
+            method: 'PATCH',
+            headers: this.headers,
+            body: JSON.stringify(item)
+            })
+            .then(res => {
+                if (res.ok) {
+                    return res.json()
+                }
+                return Promise.reject(`Ошибка: ${res.status}`)
+                })
+    }
+    
 
     replaceItemViaTitle (title, id) {
         return fetch(`${this.baseUrl}/${title}/${id}`, {

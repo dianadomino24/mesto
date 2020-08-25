@@ -19,6 +19,10 @@ const inputJob = document.querySelector('.popup__input_type_job')
 const placesListSelector = '.places__list'
 const imgPopup = document.querySelector('.popup_type_picture-zoom')
 
+const avatarForm = document.querySelector('.popup__form_type_avatar')
+const avatarInput = document.querySelector('.popup__input_type_avatar')
+const editAvatarButton = document.querySelector('.profile__image')
+const popupEditAvatar = document.querySelector('.popup_type_edit-avatar')
 const placeForm = document.querySelector('.popup__form_type_place')
 const placeInputName = placeForm.querySelector('.popup__input_type_place-name')
 const placeInputPic = placeForm.querySelector('.popup__input_type_place-pic')
@@ -28,8 +32,14 @@ const cardTemplate = document.querySelector('.place-template')
 
 const profileNameSelector = '.profile__name'
 const profileJobSelector = '.profile__job'
+const profileAvatarSelector = '.profile__image'
 const profileForm = document.querySelector('.popup__form_type_profile')
 const popupProfile = document.querySelector('.popup_type_edit-profile')
+
+const profileSubmitButton = document.querySelector('.popup__save-button_type_profile')
+const placeSubmitButton = document.querySelector('.popup__save-button_type_place')
+const avatarSubmitButton = document.querySelector('.popup__save-button_type_avatar')
+const cardDeleteSubmitButton = document.querySelector('.popup__save-button_type_card-delete')
 
 // объект настроек с селекторами и классами формы
 const formSelectorsObj = {
@@ -44,17 +54,20 @@ const formSelectorsObj = {
 
 
 //отвечает за управление отображением информации о пользователе на странице
-const userInfoEx = new UserInfo({name: profileNameSelector, about: profileJobSelector})
+const userInfoEx = new UserInfo({
+    name: profileNameSelector, 
+    about: profileJobSelector, 
+    avatar: profileAvatarSelector})
 
 //при загрузке стр запрашивает у сервера имя и инф о пользователе и отображает их в профиле
-const setServerUserInfo = new Api({
+const serverUserInfo = new Api({
     baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-14/users/me',
     headers:  {
         authorization: '3829caf2-6683-412f-9e00-d0870fcd1817',
-        // 'Content-Type': 'application/json'
+        'Content-Type': 'application/json'
     }
 })
-setServerUserInfo.getItems()
+serverUserInfo.getItems()
 .then((userData) => {
     userInfoEx.setUserInfo(userData)
 })
@@ -145,7 +158,7 @@ const serverCards = new Api ({
 // добавит начальные карточки с сервера
 function renderInitialCards() {
     // запросит у сервера мой id 
-    setServerUserInfo.getItems()
+    serverUserInfo.getItems()
     .then((userData) => {
         //будет хранить мой id  
         const MyUserId = userData._id
@@ -172,6 +185,16 @@ function renderInitialCards() {
 }
 renderInitialCards()
 
+// заменит текст кнопок при процессе загрузки на сервер
+function renderLoading(isLoading, button, text) {
+    if (isLoading) {
+        button.textContent = 'Сохранение...'
+    } else {
+        button.textContent = text
+    }
+}
+
+
 //при нажатии на кнопку редакт-я профиля:
 // запускает валидацию, создает экземпляр попапа с формой, 
 // очищает уведомл об ошибках, открывает попап, разблокирует кнопку сабмита и ставит прослушки
@@ -187,21 +210,21 @@ profileEditButton.addEventListener('click', () => {
         () => {
         //если инпуты валидны
         if (!formValidator.hasInvalidInput()) {
+            renderLoading(true, profileSubmitButton, 'Сохранить')
             //отправит имя и профессию из формы на сервер 
-            fetch('https://mesto.nomoreparties.co/v1/cohort-14/users/me', {
-                method: 'PATCH',
-                headers: {
-                    authorization: '3829caf2-6683-412f-9e00-d0870fcd1817',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: `${inputName.value.trim()}`,
-                    about: `${inputJob.value.trim()}`
-                })
-            });
-            //установим новые данные профиля (если введены values с пробелами, то обрежем лишние пробелы)
-            userInfoEx.setUserInfo({name: inputName.value.trim(), about: inputJob.value.trim()}) 
-            popupWithFormEx.close()
+            serverUserInfo.changeItem({
+                name: inputName.value.trim(),
+                about: inputJob.value.trim()
+            })
+            .then(() => {
+                //установим новые данные профиля (если введены values с пробелами, то обрежем лишние пробелы)
+                userInfoEx.setUserInfo({name: inputName.value.trim(), about: inputJob.value.trim()}) 
+                popupWithFormEx.close()
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            .finally(renderLoading(false, profileSubmitButton, 'Сохранить'))
         }
     })
     //убирает уведомления об ошибках от предыдущих инпутов
@@ -257,16 +280,22 @@ function handleLikeClick(likeCardButton, card, likeCounter) {
     // если у карточки уже стоит лайк, удалим его с сервера и из разметки
     if (likeCardButton.classList.contains('place__like-button_active')) {
         serverCards.deleteItemViaTitle('likes', card._id)
-        .then((card) => {
-            likeCounter.textContent = card.likes.length
-            likeCardButton.classList.toggle('place__like-button_active')
-        })
+            .then((card) => {
+                likeCounter.textContent = card.likes.length
+                likeCardButton.classList.toggle('place__like-button_active')
+            })
+            .catch((err) => {
+                console.log(err)
+            })
     } else {
-        serverCards.replaceItemViaTitle('likes', card._id)
-        .then((card) => {
-            likeCounter.textContent = card.likes.length
-            likeCardButton.classList.toggle('place__like-button_active')
-        })
+            serverCards.replaceItemViaTitle('likes', card._id)
+            .then((card) => {
+                likeCounter.textContent = card.likes.length
+                likeCardButton.classList.toggle('place__like-button_active')
+            })
+            .catch((err) => {
+                console.log(err)
+            })
     }
 }
 
@@ -336,6 +365,47 @@ addPlaceButton.addEventListener('click', () => {
 
     // для попапа добавл.карточек заблокируем кнопку сабмита при открытии попапа
     popupPlace.querySelector('.popup__save-button').classList.add('popup__save-button_disabled')
+
+    //прослушки для закрытия попапа и сабмита формы
+    popupWithFormEx.setEventListeners()
+})
+
+// при сабмите формы смены аватара отправит картинку на сервер и заменит в разметке
+function avatarFormSubmitHandler() {
+    serverUserInfo.changeItemViaTitle({avatar: avatarInput.value}, 'avatar')
+    .then((userData) => {
+        document.querySelector(profileAvatarSelector).style.backgroundImage = `url('${userData.avatar}')`
+        })
+    .catch((err) => {
+        console.log(err)
+    })
+    
+}
+
+// вызовет создание класса с формой для смены аватара
+editAvatarButton.addEventListener('click' , () => {
+    //валидирует форму 
+    const formValidator = new FormValidator(formSelectorsObj, avatarForm) 
+    formValidator.enableValidation()
+    
+    //создает экземпляр попапа с формой
+    const popupWithFormEx = new PopupWithForm(
+        '.popup_type_edit-avatar', 
+        //колбек сабмита
+        () => {
+            //если инпуты валидны, то запускает ф-цию сабмита
+            if (!formValidator.hasInvalidInput()) {
+                avatarFormSubmitHandler()
+                popupWithFormEx.close()
+            }
+    })
+    //убирает уведомления об ошибках от предыдущих инпутов
+    cleanInputErrors(popupEditAvatar)
+
+    popupWithFormEx.open()
+
+    // заблокируем кнопку сабмита при открытии попапа
+    popupEditAvatar.querySelector('.popup__save-button').classList.add('popup__save-button_disabled')
 
     //прослушки для закрытия попапа и сабмита формы
     popupWithFormEx.setEventListeners()
