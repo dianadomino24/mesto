@@ -77,10 +77,13 @@ export default class Card {
         this._element.querySelector('.place__image').src = this._cardImg;
         this._element.querySelector('.place__name').textContent = this._cardName;
         this._element._id = this._cardId;
+        //для отрисовки залайканных мной карточек (черного сердечка)
         this._likeCounter = this._element.querySelector('.place__like-counter')
         this._likeCounter.textContent = this._likes.length
+
         this._element.likes = this._likes;
         
+        //если id лайка мой, то сердечно черное
         const likeCardButton = this._element.querySelector('.place__like-button')
         if (this._likes.some(like => like._id === this._myLikeId)){
             likeCardButton.classList.toggle('place__like-button_active')

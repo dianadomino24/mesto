@@ -50,7 +50,8 @@ const userInfoEx = new UserInfo({name: profileNameSelector, about: profileJobSel
 const setServerUserInfo = new Api({
     baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-14/users/me',
     headers:  {
-        authorization: '3829caf2-6683-412f-9e00-d0870fcd1817'
+        authorization: '3829caf2-6683-412f-9e00-d0870fcd1817',
+        // 'Content-Type': 'application/json'
     }
 })
 setServerUserInfo.getItems()
@@ -69,7 +70,9 @@ const MINE = 3
 const THEIRS = 4
 
 // выяснила, что все мои лайки помечаются сервером таким id,
-// но пока не разобралась, как получить его до рендера карточек и постановки лайка любой из них !!!!!!!!!
+// он нужен для выделения залайканых мной карточек
+// но пока не разобралась, как получить его до рендера карточек и постановки лайка любой из них 
+// (чтобы получить этот id, надо же отправить лайк-запрос, а при изначальном рендере карточек на стр этот запрос не производится) !!!!!!!!!
 const myLikeId = "6a4f081c3216c2763bffb74c"
 
 //создает,добавлет в разметку и возвращает карточку места либо из начального массива, либо из формы
@@ -226,14 +229,13 @@ function handleCardClick(cardName, cardImg) {
     popupWithImgEx.setEventListeners()
 }
 
-
+// при клике на корзину создаст попап с формой подтверждения удаления карточки
 function handleDeleteIconClick(card, placeEvt) {
-    // создает попап с формой подтверждения удаления карточки
     const popupWithSubmit = new PopupWithSubmit({
         popupSelector: '.popup_type_card-delete', 
         item: card,
         place: placeEvt,
-
+        // при подтверждении удаления удалить карточку с сервера и из разметки
         submitHandler: (card, place) => {
             // удаляет карточку с сервера
             return serverCards.deleteItem(card._id)
@@ -250,6 +252,7 @@ function handleDeleteIconClick(card, placeEvt) {
     popupWithSubmit.setEventListeners()
 }
 
+// при клике на лайк
 function handleLikeClick(likeCardButton, card, likeCounter) {
     // если у карточки уже стоит лайк, удалим его с сервера и из разметки
     if (likeCardButton.classList.contains('place__like-button_active')) {
