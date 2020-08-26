@@ -23,6 +23,8 @@ const avatarForm = document.querySelector('.popup__form_type_avatar')
 const avatarInput = document.querySelector('.popup__input_type_avatar')
 const editAvatarButton = document.querySelector('.profile__image')
 const popupEditAvatar = document.querySelector('.popup_type_edit-avatar')
+
+const popupCardDelete = document.querySelector('.popup_type_card-delete')
 const placeForm = document.querySelector('.popup__form_type_place')
 const placeInputName = placeForm.querySelector('.popup__input_type_place-name')
 const placeInputPic = placeForm.querySelector('.popup__input_type_place-pic')
@@ -224,7 +226,9 @@ profileEditButton.addEventListener('click', () => {
             .catch((err) => {
                 console.log(err)
             })
-            .finally(renderLoading(false, profileSubmitButton, 'Сохранить'))
+            .finally(() => {
+                renderLoading(false, profileSubmitButton, 'Сохранить')
+            })
         }
     })
     //убирает уведомления об ошибках от предыдущих инпутов
@@ -262,16 +266,21 @@ function handleDeleteIconClick(card, placeEvt) {
         submitHandler: (card, place) => {
             // удаляет карточку с сервера
             return serverCards.deleteItem(card._id)
-            .then(
+            .then( () => {
                 //вызывает удаление карточки из разметки
                 place.remove()
-            )
+                card = null
+                popupWithSubmit.close()
+            })
             .catch((err) => {
                 console.log(err)
             })
         }
     })
     popupWithSubmit.open()
+    // сместит фокус с корзины, чтобы при сабмите она снова не сработала
+    document.activeElement.blur()
+    // popupCardDelete.querySelector('.popup__save-button').focus()
     popupWithSubmit.setEventListeners()
 }
 
@@ -303,6 +312,7 @@ function handleLikeClick(likeCardButton, card, likeCounter) {
 // в ответе получит созданную сервером карточку 
 // и добавит ее в разметку
 function placeFormSubmitHandler () {
+    renderLoading(true, placeSubmitButton, 'Создать')
     serverCards.createItem({
         name: placeInputName.value,
         link: placeInputPic.value})
@@ -312,6 +322,9 @@ function placeFormSubmitHandler () {
         })
     .catch((err) => {
         console.log(err)
+    })
+    .finally(() => {
+        renderLoading(false, placeSubmitButton, 'Создать')
     })
 }
 
@@ -341,7 +354,7 @@ function placeFormSubmitHandler () {
 
 //при нажатии на кнопку добавления места:
 // запускает валидацию, создает экземпляр попапа с формой, 
-// очищает уведомл об ошибках, открывает попап, разблокирует кнопку сабмита и ставит прослушки
+// очищает уведомл об ошибках, открывает попап, блокирует кнопку сабмита и ставит прослушки
 addPlaceButton.addEventListener('click', () => {
     //валидирует форму 
     const formValidator = new FormValidator(formSelectorsObj, placeForm) 
@@ -372,6 +385,7 @@ addPlaceButton.addEventListener('click', () => {
 
 // при сабмите формы смены аватара отправит картинку на сервер и заменит в разметке
 function avatarFormSubmitHandler() {
+    renderLoading(true, avatarSubmitButton, 'Сохранить')
     serverUserInfo.changeItemViaTitle({avatar: avatarInput.value}, 'avatar')
     .then((userData) => {
         document.querySelector(profileAvatarSelector).style.backgroundImage = `url('${userData.avatar}')`
@@ -379,7 +393,9 @@ function avatarFormSubmitHandler() {
     .catch((err) => {
         console.log(err)
     })
-    
+    .finally(() => {
+        renderLoading(false, avatarSubmitButton, 'Сохранить')
+    })
 }
 
 // вызовет создание класса с формой для смены аватара

@@ -1,5 +1,3 @@
-// const { default: Popup } = require("./Popup"); ???
-
 import Popup from './Popup.js'
 
 export default class PopupWithSubmit extends Popup {
@@ -11,13 +9,17 @@ export default class PopupWithSubmit extends Popup {
         this._place = place;
     }
 
+    // close() {
+    //     super.close()
+    //     // this._formElement.reset()   
+    // }
+
     setEventListeners() {
         super.setEventListeners()
         this._formElement.addEventListener('submit', (evt) => {
             evt.preventDefault();
             this._submitHandler(this._card, this._place)
-            super.close()
-        } )
-        
+            // this.close()
+        } )   
     }
 }

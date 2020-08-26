@@ -39,20 +39,15 @@ export default class Card {
     disableDelete() {
         this._element.querySelector('.place__delete-button').classList.add('place__delete-button_disabled')
     }
-    _deleteCard(evt) {
+    _deleteCard(evt, element) {
         //сохраняет дом элемент, который надо будет удалить из разметки
         const placeEvt = evt.target.closest('.places__item');
         //вызывает попап с подтверждением удаления
-        this._handleDeleteIconClick(this._element, placeEvt)
+        this._handleDeleteIconClick(element, placeEvt)
 
         // проверяет, не пустой ли список карточек
         this.checkEmptyPlacesList()
-        this._element = null
     }
-
-    // _likeCard(likeCardButton) {
-    //     likeCardButton.classList.toggle('place__like-button_active')
-    // }
 
     _setEventListeners() {
         const likeCardButton = this._element.querySelector('.place__like-button')

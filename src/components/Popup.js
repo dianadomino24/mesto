@@ -13,6 +13,7 @@ export default class Popup {
 
     close() {
         this._popup.classList.remove('popup_opened')
+        this._formElement = null
     }
     //закрывает при нажатии esc
     _handleEscClose(evt) {

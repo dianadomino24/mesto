@@ -98,14 +98,6 @@ export default class Api {
                 return Promise.reject(`Ошибка: ${res.status}`)
                 })
     }
-    
-    // getProfileData() {
-
-    // }
-
-    // getAllNeededData () {
-    //     return Promise.all([this.getItems(), this.getProfileData()])
-    // }
 
 }
         
