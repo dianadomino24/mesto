@@ -56,8 +56,9 @@ export class FormValidator {
         if (inputElementNoSpacing.length == 0) {
             return INVALID_EMPTY
         } 
-        //если введено меньше 2 символов без учета пробелов в форме профиля (в форме места миним.длина инпута - 1)
-        if (inputElementNoSpacing.length < 2 && this._formElement.classList.contains(profileFormSelector)) {
+        //если введено меньше 2 символов 
+        // && this._formElement.classList.contains(profileFormSelector) без учета пробелов в форме профиля (в форме места миним.длина инпута - 1)
+        if (inputElementNoSpacing.length < 2 ) {
             return INVALID_TOOSHORT
         }
         return VALID

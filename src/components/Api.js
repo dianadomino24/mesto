@@ -1,11 +1,11 @@
 export default class Api {
-    constructor ({ baseUrl, headers }) { 
-            this.baseUrl = baseUrl
-            this.headers = headers
+    constructor ({baseUrl, headers}) { 
+            this.baseUrl = baseUrl;
+            this.headers = headers;
     }
         
-    getItems () {
-        return fetch(this.baseUrl, {
+    getItems (label) {
+        return fetch(this.baseUrl.concat(label), {
         headers: this.headers
         })
         .then(res => {
@@ -15,22 +15,9 @@ export default class Api {
             return Promise.reject(`Ошибка: ${res.status}`)
             })
     }
-
-    deleteItem (id) {
-        return fetch(`${this.baseUrl}/${id}`, {
-        method: 'DELETE',
-        headers: this.headers
-        })
-        .then(res => {
-        if (res.ok) {
-            return res.json()
-        }
-        return Promise.reject(`Ошибка: ${res.status}`)
-        })
-    }
         
-    createItem (item) { 
-        return fetch(this.baseUrl, {
+    createItem (item, label) { 
+        return fetch(this.baseUrl.concat(label), {
         method: 'POST',
         headers: this.headers,
         body: JSON.stringify(item)
@@ -43,8 +30,8 @@ export default class Api {
             })
     }
     
-    changeItem (item) {
-        return fetch(this.baseUrl, {
+    changeItem  (item, title) {
+        return fetch(this.baseUrl.concat(title), {
             method: 'PATCH',
             headers: this.headers,
             body: JSON.stringify(item)
@@ -57,23 +44,8 @@ export default class Api {
                 })
     }
     
-    changeItemViaTitle (item, title) {
-        return fetch(`${this.baseUrl}/${title}`, {
-            method: 'PATCH',
-            headers: this.headers,
-            body: JSON.stringify(item)
-            })
-            .then(res => {
-                if (res.ok) {
-                    return res.json()
-                }
-                return Promise.reject(`Ошибка: ${res.status}`)
-                })
-    }
-    
-
-    replaceItemViaTitle (title, id) {
-        return fetch(`${this.baseUrl}/${title}/${id}`, {
+    replaceItem  (title, id) {
+        return fetch(this.baseUrl.concat(title).concat(`/${id}`), {
             method: 'PUT',
             headers: this.headers,
             // body: JSON.stringify(item)
@@ -86,8 +58,8 @@ export default class Api {
                 })
     }
 
-    deleteItemViaTitle (title, id){
-        return fetch(`${this.baseUrl}/${title}/${id}`, {
+    deleteItem  (title, id){
+        return fetch(this.baseUrl.concat(title).concat(`/${id}`), {
             method: 'DELETE',
             headers: this.headers,
             })
@@ -98,7 +70,6 @@ export default class Api {
                 return Promise.reject(`Ошибка: ${res.status}`)
                 })
     }
-
 }
         
 //  - получить список всех карточек в виде массива (GET)

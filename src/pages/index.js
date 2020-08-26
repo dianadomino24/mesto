@@ -3,7 +3,6 @@ import './index.css'
 import Section from '../components/Section.js'
 import Card from '../components/Card.js'
 import {cleanInputErrors, FormValidator} from '../components/FormValidator.js'
-// import {initialCardsArr} from '../components/utils.js'
 import UserInfo from '../components/UserInfo.js'
 import PopupWithForm from '../components/PopupWithForm.js'
 import PopupWithImage from '../components/PopupWithImage.js'
@@ -24,7 +23,7 @@ const avatarInput = document.querySelector('.popup__input_type_avatar')
 const editAvatarButton = document.querySelector('.profile__image')
 const popupEditAvatar = document.querySelector('.popup_type_edit-avatar')
 
-const popupCardDelete = document.querySelector('.popup_type_card-delete')
+
 const placeForm = document.querySelector('.popup__form_type_place')
 const placeInputName = placeForm.querySelector('.popup__input_type_place-name')
 const placeInputPic = placeForm.querySelector('.popup__input_type_place-pic')
@@ -41,7 +40,7 @@ const popupProfile = document.querySelector('.popup_type_edit-profile')
 const profileSubmitButton = document.querySelector('.popup__save-button_type_profile')
 const placeSubmitButton = document.querySelector('.popup__save-button_type_place')
 const avatarSubmitButton = document.querySelector('.popup__save-button_type_avatar')
-const cardDeleteSubmitButton = document.querySelector('.popup__save-button_type_card-delete')
+// const cardDeleteSubmitButton = document.querySelector('.popup__save-button_type_card-delete')
 
 // объект настроек с селекторами и классами формы
 const formSelectorsObj = {
@@ -54,6 +53,8 @@ const formSelectorsObj = {
     controlSelector: '.popup__label',
 }
 
+const token = '3829caf2-6683-412f-9e00-d0870fcd1817'
+const cohort = 'cohort-14'
 
 //отвечает за управление отображением информации о пользователе на странице
 const userInfoEx = new UserInfo({
@@ -61,15 +62,17 @@ const userInfoEx = new UserInfo({
     about: profileJobSelector, 
     avatar: profileAvatarSelector})
 
-//при загрузке стр запрашивает у сервера имя и инф о пользователе и отображает их в профиле
-const serverUserInfo = new Api({
-    baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-14/users/me',
+//при загрузке стр запрашивает у сервера имя и инф о пользователе и карточках 
+const serverInfo = new Api({
+    baseUrl: `https://mesto.nomoreparties.co/v1/${cohort}/`,
     headers:  {
-        authorization: '3829caf2-6683-412f-9e00-d0870fcd1817',
+        authorization: token,
         'Content-Type': 'application/json'
     }
 })
-serverUserInfo.getItems()
+
+// отображает данные пользователья в профиле
+serverInfo.getItems('users/me')
 .then((userData) => {
     userInfoEx.setUserInfo(userData)
 })
@@ -148,25 +151,17 @@ function cardCreate (renderedArr, direction, whose) {
     return renderedCard
 }
 
-// класс для карточек с сервера
-const serverCards = new Api ({
-    baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-14/cards',
-    headers: {
-        authorization: '3829caf2-6683-412f-9e00-d0870fcd1817',
-        'Content-Type': 'application/json'
-    }
-})
 
 // добавит начальные карточки с сервера
 function renderInitialCards() {
-    // запросит у сервера мой id 
-    serverUserInfo.getItems()
+    // запросит у сервера мой id (чтобы отличить мои карточки с сервера)
+    serverInfo.getItems('users/me')
     .then((userData) => {
         //будет хранить мой id  
         const MyUserId = userData._id
         
         // запросит начальные карточки с сервера
-        serverCards.getItems()
+        serverInfo.getItems('cards')
         .then((cardsList) => {
             // для каждой карточки запросит id хозяина и сравнит с моим, 
             // создаст карточку, учитывая состояние кнопки удаления карточки
@@ -187,15 +182,17 @@ function renderInitialCards() {
 }
 renderInitialCards()
 
-// заменит текст кнопок при процессе загрузки на сервер
+const loadingText = 'Сохранение...'
+const defaultSaveText = 'Сохранить'
+const defaultCreateText = 'Создать'
+// заменит текст кнопок при ожидании процесса загрузки данных на сервер
 function renderLoading(isLoading, button, text) {
     if (isLoading) {
-        button.textContent = 'Сохранение...'
+        button.textContent = loadingText
     } else {
         button.textContent = text
     }
 }
-
 
 //при нажатии на кнопку редакт-я профиля:
 // запускает валидацию, создает экземпляр попапа с формой, 
@@ -212,12 +209,12 @@ profileEditButton.addEventListener('click', () => {
         () => {
         //если инпуты валидны
         if (!formValidator.hasInvalidInput()) {
-            renderLoading(true, profileSubmitButton, 'Сохранить')
+            renderLoading(true, profileSubmitButton, defaultSaveText)
             //отправит имя и профессию из формы на сервер 
-            serverUserInfo.changeItem({
+            serverInfo.changeItem ({
                 name: inputName.value.trim(),
                 about: inputJob.value.trim()
-            })
+            }, 'users/me')
             .then(() => {
                 //установим новые данные профиля (если введены values с пробелами, то обрежем лишние пробелы)
                 userInfoEx.setUserInfo({name: inputName.value.trim(), about: inputJob.value.trim()}) 
@@ -227,7 +224,7 @@ profileEditButton.addEventListener('click', () => {
                 console.log(err)
             })
             .finally(() => {
-                renderLoading(false, profileSubmitButton, 'Сохранить')
+                renderLoading(false, profileSubmitButton, defaultSaveText)
             })
         }
     })
@@ -265,7 +262,7 @@ function handleDeleteIconClick(card, placeEvt) {
         // при подтверждении удаления удалить карточку с сервера и из разметки
         submitHandler: (card, place) => {
             // удаляет карточку с сервера
-            return serverCards.deleteItem(card._id)
+            return serverInfo.deleteItem ('cards', card._id)
             .then( () => {
                 //вызывает удаление карточки из разметки
                 place.remove()
@@ -288,7 +285,7 @@ function handleDeleteIconClick(card, placeEvt) {
 function handleLikeClick(likeCardButton, card, likeCounter) {
     // если у карточки уже стоит лайк, удалим его с сервера и из разметки
     if (likeCardButton.classList.contains('place__like-button_active')) {
-        serverCards.deleteItemViaTitle('likes', card._id)
+        serverInfo.deleteItem ('cards/likes', card._id)
             .then((card) => {
                 likeCounter.textContent = card.likes.length
                 likeCardButton.classList.toggle('place__like-button_active')
@@ -297,7 +294,7 @@ function handleLikeClick(likeCardButton, card, likeCounter) {
                 console.log(err)
             })
     } else {
-            serverCards.replaceItemViaTitle('likes', card._id)
+            serverInfo.replaceItem ('cards/likes', card._id)
             .then((card) => {
                 likeCounter.textContent = card.likes.length
                 likeCardButton.classList.toggle('place__like-button_active')
@@ -312,10 +309,11 @@ function handleLikeClick(likeCardButton, card, likeCounter) {
 // в ответе получит созданную сервером карточку 
 // и добавит ее в разметку
 function placeFormSubmitHandler () {
-    renderLoading(true, placeSubmitButton, 'Создать')
-    serverCards.createItem({
+    renderLoading(true, placeSubmitButton, defaultCreateText)
+    serverInfo.createItem({
         name: placeInputName.value,
-        link: placeInputPic.value})
+        link: placeInputPic.value},
+        'cards')
     .then(card => {
         const cardFromForm = cardCreate([card], PREPEND, MINE)
         cardFromForm.renderItems()
@@ -324,33 +322,10 @@ function placeFormSubmitHandler () {
         console.log(err)
     })
     .finally(() => {
-        renderLoading(false, placeSubmitButton, 'Создать')
+        renderLoading(false, placeSubmitButton, defaultCreateText)
     })
 }
 
-
-// function placeFormSubmitHandler () {
-//     // отправит данные создаваемой карточки на сервер
-//     fetch('https://mesto.nomoreparties.co/v1/cohort-14/cards', {
-//                 method: 'POST',
-//                 headers: {
-//                     authorization: '3829caf2-6683-412f-9e00-d0870fcd1817',
-//                     'Content-Type': 'application/json'
-//                 },
-//                 body: JSON.stringify({
-//                     name: `${placeInputName.value}`,
-//                     link: `${placeInputPic.value}`
-//                 })
-//             });
-//     //создаст карточку 
-//     const cardFromForm = cardCreate(
-//         [{
-//             name: placeInputName.value, 
-//             link: placeInputPic.value
-//         }],
-//         PREPEND, MINE)
-//     cardFromForm.renderItems()
-// }
 
 //при нажатии на кнопку добавления места:
 // запускает валидацию, создает экземпляр попапа с формой, 
@@ -385,8 +360,8 @@ addPlaceButton.addEventListener('click', () => {
 
 // при сабмите формы смены аватара отправит картинку на сервер и заменит в разметке
 function avatarFormSubmitHandler() {
-    renderLoading(true, avatarSubmitButton, 'Сохранить')
-    serverUserInfo.changeItemViaTitle({avatar: avatarInput.value}, 'avatar')
+    renderLoading(true, avatarSubmitButton, defaultSaveText)
+    serverInfo.changeItem ({avatar: avatarInput.value}, 'users/me/avatar')
     .then((userData) => {
         document.querySelector(profileAvatarSelector).style.backgroundImage = `url('${userData.avatar}')`
         })
@@ -394,7 +369,7 @@ function avatarFormSubmitHandler() {
         console.log(err)
     })
     .finally(() => {
-        renderLoading(false, avatarSubmitButton, 'Сохранить')
+        renderLoading(false, avatarSubmitButton, defaultSaveText)
     })
 }
 
