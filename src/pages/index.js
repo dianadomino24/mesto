@@ -270,52 +270,48 @@ profileEditButton.addEventListener('click', () => {
     // popupWithProfileForm.setEventListeners()
 })
 
-
+const popupWithImgEx = new PopupWithImage(
+    '.popup_type_picture-zoom',
+    imgPopup
+)
+popupWithImgEx.setEventListeners()
 
 //при клике по картинке создаст экземпл попапа с картинкой, откроет его и поставит прослушки
-function handleCardClick(cardName, cardImg) {
-    const popupWithImgEx = new PopupWithImage(
-        cardName,
-        cardImg,
-        '.popup_type_picture-zoom',
-        imgPopup
-    )
-    popupWithImgEx.setEventListeners()
-    popupWithImgEx.open()
+function handleCardClick(cardName, cardImg) { 
+    popupWithImgEx.open(cardName, cardImg)
 }
 
+// попап с формой подтверждения удаления карточки
+const popupWithSubmit = new PopupWithSubmit({
+    popupSelector: '.popup_type_card-delete',
+    // при подтверждении удаления удалить карточку с сервера и из разметки
+    submitHandler: (cardItem, cardDOMElement) => {
+        renderLoading(true, cardDeleteSubmitButton, defaultYesText)
+        // удаляет карточку с сервера
+        return serverInfo
+            .deleteItem('cards', cardItem._id)
+            .then(() => {
+                //вызывает удаление карточки из разметки
+                cardDOMElement.remove()
+                cardItem = null
+                checkEmptyPlacesList()
+            })
+            .then(() => {
+                popupWithSubmit.close()
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            .finally(() => {
+                renderLoading(false, cardDeleteSubmitButton, defaultYesText)
+            })
+    },
+})
+popupWithSubmit.setEventListeners()
 
-// при клике на корзину создаст попап с формой подтверждения удаления карточки
-function handleDeleteIconClick(card, placeEvt) {
-    const popupWithSubmit = new PopupWithSubmit({
-        popupSelector: '.popup_type_card-delete',
-        item: card,
-        place: placeEvt,
-        // при подтверждении удаления удалить карточку с сервера и из разметки
-        submitHandler: (card, place) => {
-            renderLoading(true, cardDeleteSubmitButton, defaultYesText)
-            // удаляет карточку с сервера
-            return serverInfo
-                .deleteItem('cards', card._id)
-                .then(() => {
-                    //вызывает удаление карточки из разметки
-                    place.remove()
-                    card = null
-                    checkEmptyPlacesList()
-                })
-                .then(() => {
-                    popupWithSubmit.close()
-                })
-                .catch((err) => {
-                    console.log(err)
-                })
-                .finally(() => {
-                    renderLoading(false, cardDeleteSubmitButton, defaultYesText)
-                })
-        },
-    })
-    popupWithSubmit.setEventListeners()
-    popupWithSubmit.open()
+// при клике на корзину вызовет попап с формой подтверждения удаления карточки
+function handleDeleteIconClick(cardItem, cardDOMElement) {
+    popupWithSubmit.open(cardItem, cardDOMElement)
     // сместит фокус с корзины, чтобы при сабмите она снова не сработала
     document.activeElement.blur()
     // popupCardDelete.querySelector('.popup__save-button').focus()
