@@ -43,7 +43,9 @@ const placeSubmitButton = document.querySelector(
 const avatarSubmitButton = document.querySelector(
     '.popup__save-button_type_avatar'
 )
-const cardDeleteSubmitButton = document.querySelector('.popup__save-button_type_card-delete')
+const cardDeleteSubmitButton = document.querySelector(
+    '.popup__save-button_type_card-delete'
+)
 
 // объект настроек с селекторами и классами формы
 const formSelectorsObj = {
@@ -59,13 +61,14 @@ const formSelectorsObj = {
 const token = '3829caf2-6683-412f-9e00-d0870fcd1817'
 const cohort = 'cohort-14'
 
-//кейсы для определения направления добавления карточек
-const PREPEND = 1
-const APPEND = 2
-// кейсы для определения, кем добавлена карточка
-const MINE = 3
-const THEIRS = 4
-
+const cardRenderTypes = {
+    //кейсы для определения направления добавления карточек
+    PREPEND: 0,
+    APPEND: 1,
+    // кейсы для определения, кем добавлена карточка
+    MINE: 3,
+    THEIRS: 4,
+}
 
 //отвечает за управление отображением информации о пользователе на странице
 const userInfoEx = new UserInfo({
@@ -82,7 +85,6 @@ const serverInfo = new Api({
         'Content-Type': 'application/json',
     },
 })
-
 
 // проверяет, есть ли в списке картинки, если нет, то делает видимой надпись о пустом списке
 //в placesList всегда есть минимум 1 элемент - надпись о пустом списке
@@ -114,7 +116,7 @@ function cardCreate(renderedArr, direction, whose, myLikeId) {
                             link: item.link,
                             _id: item._id,
                             likes: item.likes,
-                            owner: item.owner
+                            owner: item.owner,
                         },
                         //вызовет открытие попапа с картинкой
                         handleCardClick,
@@ -122,7 +124,6 @@ function cardCreate(renderedArr, direction, whose, myLikeId) {
                         handleLikeClick,
 
                         handleDeleteIconClick,
-
                     },
                     cardTemplate,
                     myLikeId
@@ -131,9 +132,9 @@ function cardCreate(renderedArr, direction, whose, myLikeId) {
                 const cardElement = card.generateCard()
                 //определит, чьи карточки и выкл кнопку удаления у чужих
                 switch (whose) {
-                    case MINE:
+                    case cardRenderTypes.MINE:
                         break
-                    case THEIRS:
+                    case cardRenderTypes.THEIRS:
                         card.disableDelete()
                         break
                     default:
@@ -142,10 +143,10 @@ function cardCreate(renderedArr, direction, whose, myLikeId) {
 
                 //определит, в каком порядке добавлять карточки
                 switch (direction) {
-                    case PREPEND:
+                    case cardRenderTypes.PREPEND:
                         renderedCard.addItemPrepend(cardElement)
                         break
-                    case APPEND:
+                    case cardRenderTypes.APPEND:
                         renderedCard.addItemAppend(cardElement)
                         break
                     default:
@@ -161,34 +162,37 @@ function cardCreate(renderedArr, direction, whose, myLikeId) {
     return renderedCard
 }
 
-// для отрисовки стр запросим данные пользователя и карточек, 
+// для отрисовки стр запросим данные пользователя и карточек,
 // когда оба промиса вернут данные, выведем их в разметку
-Promise.all([ 
-    serverInfo.getItems('users/me'),
-    serverInfo.getItems('cards')
-])
-    .then((values) => {  
-        const [userData, initialCards] = values; 
+Promise.all([serverInfo.getItems('users/me'), serverInfo.getItems('cards')])
+    .then((values) => {
+        const [userData, initialCards] = values
         // отображает данные пользователья в профиле
         userInfoEx.setUserInfo(userData)
         const myLikeId = userData._id
         // создаст карточку, учитывая состояние кнопки удаления карточки (мои с корзиной)
         initialCards.forEach((card) => {
-            cardCreate([card], APPEND, card.owner._id === userData._id ? MINE : THEIRS, myLikeId).renderItems();
-                    // более длинная версия написанного выше 
-                    // if (card.owner._id === MyUserId) {
-                    //     const myCard = cardCreate([card], APPEND, MINE)
-                    //     myCard.renderItems()
-                    // } else {
-                    //     const initialCard = cardCreate([card], APPEND, THEIRS)
-                    //     initialCard.renderItems()
-                    // }
+            cardCreate(
+                [card],
+                cardRenderTypes.APPEND,
+                card.owner._id === userData._id
+                    ? cardRenderTypes.MINE
+                    : cardRenderTypes.THEIRS,
+                myLikeId
+            ).renderItems()
+            // более длинная версия написанного выше
+            // if (card.owner._id === MyUserId) {
+            //     const myCard = cardCreate([card], APPEND, MINE)
+            //     myCard.renderItems()
+            // } else {
+            //     const initialCard = cardCreate([card], APPEND, THEIRS)
+            //     initialCard.renderItems()
+            // }
         })
     })
     .catch((err) => {
-        console.log(err);
+        console.log(err)
     })
-
 
 const loadingText = 'Сохранение...'
 const defaultSaveText = 'Сохранить'
@@ -215,7 +219,8 @@ const popupWithProfileForm = new PopupWithForm(
         if (!formProfileValidator.hasInvalidInput()) {
             renderLoading(true, profileSubmitButton, defaultSaveText)
             //отправит имя и профессию из формы на сервер
-            serverInfo.changeItem(
+            serverInfo
+                .changeItem(
                     {
                         name: inputName.value.trim(),
                         about: inputJob.value.trim(),
@@ -228,7 +233,6 @@ const popupWithProfileForm = new PopupWithForm(
                         name: inputName.value.trim(),
                         about: inputJob.value.trim(),
                     })
-                    
                 })
                 .then(() => {
                     popupWithProfileForm.close()
@@ -245,7 +249,7 @@ const popupWithProfileForm = new PopupWithForm(
 popupWithProfileForm.setEventListeners()
 
 //при нажатии на кнопку редакт-я профиля:
-// запускает валидацию,очищает уведомл об ошибках, 
+// запускает валидацию,очищает уведомл об ошибках,
 // открывает попап, разблокирует кнопку сабмита и ставит прослушки
 profileEditButton.addEventListener('click', () => {
     //валидирует форму
@@ -255,7 +259,7 @@ profileEditButton.addEventListener('click', () => {
     cleanInputErrors(popupProfile)
 
     popupWithProfileForm.open()
-    
+
     //разблокирует кнопку сабмита у попапа профиля
     popupProfile
         .querySelector('.popup__save-button')
@@ -265,19 +269,16 @@ profileEditButton.addEventListener('click', () => {
     const profileInfo = userInfoEx.getUserInfo()
     inputName.value = profileInfo.name
     inputJob.value = profileInfo.about
-    
+
     //прослушки для закрытия попапа и сабмита формы
     // popupWithProfileForm.setEventListeners()
 })
 
-const popupWithImgEx = new PopupWithImage(
-    '.popup_type_picture-zoom',
-    imgPopup
-)
+const popupWithImgEx = new PopupWithImage('.popup_type_picture-zoom', imgPopup)
 popupWithImgEx.setEventListeners()
 
 //при клике по картинке создаст экземпл попапа с картинкой, откроет его и поставит прослушки
-function handleCardClick(cardName, cardImg) { 
+function handleCardClick(cardName, cardImg) {
     popupWithImgEx.open(cardName, cardImg)
 }
 
@@ -317,7 +318,6 @@ function handleDeleteIconClick(cardItem, cardDOMElement) {
     // popupCardDelete.querySelector('.popup__save-button').focus()
 }
 
-
 // при клике на лайк
 function handleLikeClick(likeCardButton, card, likeCounter) {
     // если у карточки уже стоит лайк, удалим его с сервера и из разметки
@@ -351,33 +351,37 @@ function placeFormSubmitHandler() {
     // до получения ответа от сервера покажет пользователю надпись о процессе загрузки
     renderLoading(true, placeSubmitButton, defaultCreateText)
     // узнает у сервера мой id (использ-ся для создания карточек)
-    serverInfo.getItems('users/me')
-    .then((userData) => {
+    serverInfo.getItems('users/me').then((userData) => {
         const myLikeId = userData._id
         // отправит новую карточку на сервер
-        serverInfo.createItem(
-            {
-                name: placeInputName.value,
-                link: placeInputPic.value,
-            },
-            'cards'
-        )
-        // создаст ее в разметке
-        .then((card) => {
-            const cardFromForm = cardCreate([card], PREPEND, MINE, myLikeId)
-            cardFromForm.renderItems()
-        })
-        .then(() => {
-            popupWithCardForm.close()
-        })
-        .catch((err) => {
-            console.log(err)
-        })
-        .finally(() => {
-            renderLoading(false, placeSubmitButton, defaultCreateText)
-        })
+        serverInfo
+            .createItem(
+                {
+                    name: placeInputName.value,
+                    link: placeInputPic.value,
+                },
+                'cards'
+            )
+            // создаст ее в разметке
+            .then((card) => {
+                const cardFromForm = cardCreate(
+                    [card],
+                    cardRenderTypes.PREPEND,
+                    cardRenderTypes.MINE,
+                    myLikeId
+                )
+                cardFromForm.renderItems()
+            })
+            .then(() => {
+                popupWithCardForm.close()
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            .finally(() => {
+                renderLoading(false, placeSubmitButton, defaultCreateText)
+            })
     })
-        
 }
 
 //будет валидировать форму карточки
@@ -391,7 +395,6 @@ const popupWithCardForm = new PopupWithForm(
         //если инпуты валидны, то запускает ф-цию сабмита
         if (!formCardValidator.hasInvalidInput()) {
             placeFormSubmitHandler()
-            
         }
     }
 )
@@ -467,7 +470,6 @@ editAvatarButton.addEventListener('click', () => {
         .querySelector('.popup__save-button')
         .classList.add('popup__save-button_disabled')
 
-    
     popupWithAvatarForm.open()
     //прослушки для закрытия попапа и сабмита формы
     // popupWithAvatarForm.setEventListeners()

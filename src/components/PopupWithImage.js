@@ -8,6 +8,7 @@ export default class PopupWithImage extends Popup {
     open(cardName, cardImg) {
         this._cardName = cardName
         this._cardImg = cardImg
+        
         this._imgPopup.querySelector(
             '.picture-zoom__title'
         ).textContent = this._cardName

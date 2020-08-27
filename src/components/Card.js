@@ -1,11 +1,6 @@
 export default class Card {
     constructor(
-        {
-            data,
-            handleCardClick,
-            handleLikeClick,
-            handleDeleteIconClick,
-        },
+        { data, handleCardClick, handleLikeClick, handleDeleteIconClick },
         cardTemplate,
         myLikeId
     ) {
