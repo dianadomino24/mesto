@@ -4,7 +4,7 @@ export default class Popup {
         this._closeButton = this._popup.querySelector('.popup__close-button')
         this._formElement = this._popup.querySelector('.popup__form')
     }
-    open(){ 
+    open() {
         if (this._formElement) {
             this._formElement.reset()
         }
@@ -13,17 +13,19 @@ export default class Popup {
 
     close() {
         this._popup.classList.remove('popup_opened')
-        this._formElement = null
+        // this._formElement = null
     }
     //закрывает при нажатии esc
     _handleEscClose(evt) {
-            if (evt.key === 'Escape') {
-                this.close()
-            }
+        if (evt.key === 'Escape') {
+            this.close()
+        }
     }
     //закрывает попап при нажатии на фон
     _closePopupByClickingOverlay(event) {
-        if (event.target !== event.currentTarget) { return }
+        if (event.target !== event.currentTarget) {
+            return
+        }
         this.close()
     }
 
@@ -35,6 +37,5 @@ export default class Popup {
         this._popup.addEventListener('mousedown', (event) => {
             this._closePopupByClickingOverlay(event)
         })
-        
     }
 }
