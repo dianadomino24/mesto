@@ -4,7 +4,7 @@
     "description": "css, html, javascript, OOP, webpack",
     "main": "index.js",
     "scripts": {
-        "build": "rm -rf ./dist && webpack",
+        "build": "rimraf ./dist && webpack",
         "dev": "webpack-dev-server --open --watch"
     },
     "repository": {

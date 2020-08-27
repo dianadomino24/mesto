@@ -5,9 +5,9 @@ export default class Card {
             handleCardClick,
             handleLikeClick,
             handleDeleteIconClick,
-            myLikeId,
         },
-        cardTemplate
+        cardTemplate,
+        myLikeId
     ) {
         this._cardTemplate = cardTemplate
         this._cardName = data.name

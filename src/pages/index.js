@@ -59,6 +59,14 @@ const formSelectorsObj = {
 const token = '3829caf2-6683-412f-9e00-d0870fcd1817'
 const cohort = 'cohort-14'
 
+//кейсы для определения направления добавления карточек
+const PREPEND = 1
+const APPEND = 2
+// кейсы для определения, кем добавлена карточка
+const MINE = 3
+const THEIRS = 4
+
+
 //отвечает за управление отображением информации о пользователе на странице
 const userInfoEx = new UserInfo({
     name: profileNameSelector,
@@ -75,28 +83,6 @@ const serverInfo = new Api({
     },
 })
 
-// отображает данные пользователья в профиле
-serverInfo
-    .getItems('users/me')
-    .then((userData) => {
-        userInfoEx.setUserInfo(userData)
-    })
-    .catch((err) => {
-        console.log(err)
-    })
-
-//кейсы для определения направления добавления карточек
-const PREPEND = 1
-const APPEND = 2
-// кейсы для определения, кем добавлена карточка
-const MINE = 3
-const THEIRS = 4
-
-// выяснила, что все мои лайки помечаются сервером таким id,
-// он нужен для выделения залайканых мной карточек
-// но пока не разобралась, как получить его до рендера карточек и постановки лайка любой из них
-// (чтобы получить этот id, надо же отправить лайк-запрос, а при изначальном рендере карточек на стр этот запрос не производится) !!!!!!!!!
-const myLikeId = '6a4f081c3216c2763bffb74c'
 
 // проверяет, есть ли в списке картинки, если нет, то делает видимой надпись о пустом списке
 //в placesList всегда есть минимум 1 элемент - надпись о пустом списке
@@ -114,7 +100,7 @@ function checkEmptyPlacesList() {
 }
 
 //создает,добавлет в разметку и возвращает карточку места либо из начального массива, либо из формы
-function cardCreate(renderedArr, direction, whose) {
+function cardCreate(renderedArr, direction, whose, myLikeId) {
     //добавляет созданную карточку в разметку стр
     const renderedCard = new Section(
         {
@@ -128,6 +114,7 @@ function cardCreate(renderedArr, direction, whose) {
                             link: item.link,
                             _id: item._id,
                             likes: item.likes,
+                            owner: item.owner
                         },
                         //вызовет открытие попапа с картинкой
                         handleCardClick,
@@ -136,9 +123,9 @@ function cardCreate(renderedArr, direction, whose) {
 
                         handleDeleteIconClick,
 
-                        myLikeId,
                     },
-                    cardTemplate
+                    cardTemplate,
+                    myLikeId
                 )
 
                 const cardElement = card.generateCard()
@@ -174,35 +161,34 @@ function cardCreate(renderedArr, direction, whose) {
     return renderedCard
 }
 
-// добавит начальные карточки с сервера
-function renderInitialCards() {
-    // запросит у сервера мой id (чтобы отличить мои карточки с сервера)
-    serverInfo.getItems('users/me').then((userData) => {
-        //будет хранить мой id
-        const MyUserId = userData._id
-
-        // запросит начальные карточки с сервера
-        serverInfo
-            .getItems('cards')
-            .then((cardsList) => {
-                // для каждой карточки запросит id хозяина и сравнит с моим,
-                // создаст карточку, учитывая состояние кнопки удаления карточки
-                cardsList.forEach((card) => {
-                    if (card.owner._id === MyUserId) {
-                        const myCard = cardCreate([card], APPEND, MINE)
-                        myCard.renderItems()
-                    } else {
-                        const initialCard = cardCreate([card], APPEND, THEIRS)
-                        initialCard.renderItems()
-                    }
-                })
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+// для отрисовки стр запросим данные пользователя и карточек, 
+// когда оба промиса вернут данные, выведем их в разметку
+Promise.all([ 
+    serverInfo.getItems('users/me'),
+    serverInfo.getItems('cards')
+])
+    .then((values) => {  
+        const [userData, initialCards] = values; 
+        // отображает данные пользователья в профиле
+        userInfoEx.setUserInfo(userData)
+        const myLikeId = userData._id
+        // создаст карточку, учитывая состояние кнопки удаления карточки (мои с корзиной)
+        initialCards.forEach((card) => {
+            cardCreate([card], APPEND, card.owner._id === userData._id ? MINE : THEIRS, myLikeId).renderItems();
+                    // более длинная версия написанного выше 
+                    // if (card.owner._id === MyUserId) {
+                    //     const myCard = cardCreate([card], APPEND, MINE)
+                    //     myCard.renderItems()
+                    // } else {
+                    //     const initialCard = cardCreate([card], APPEND, THEIRS)
+                    //     initialCard.renderItems()
+                    // }
+        })
     })
-}
-renderInitialCards()
+    .catch((err) => {
+        console.log(err);
+    })
+
 
 const loadingText = 'Сохранение...'
 const defaultSaveText = 'Сохранить'
@@ -242,6 +228,9 @@ const popupWithProfileForm = new PopupWithForm(
                         name: inputName.value.trim(),
                         about: inputJob.value.trim(),
                     })
+                    
+                })
+                .then(() => {
                     popupWithProfileForm.close()
                 })
                 .catch((err) => {
@@ -253,6 +242,7 @@ const popupWithProfileForm = new PopupWithForm(
         }
     }
 )
+popupWithProfileForm.setEventListeners()
 
 //при нажатии на кнопку редакт-я профиля:
 // запускает валидацию,очищает уведомл об ошибках, 
@@ -265,19 +255,19 @@ profileEditButton.addEventListener('click', () => {
     cleanInputErrors(popupProfile)
 
     popupWithProfileForm.open()
-
-    //при открытии попапа редактирования профиля заполняет values инпутов данными из профиля
-    const profileInfo = userInfoEx.getUserInfo()
-    inputName.value = profileInfo.name
-    inputJob.value = profileInfo.about
-
+    
     //разблокирует кнопку сабмита у попапа профиля
     popupProfile
         .querySelector('.popup__save-button')
         .classList.remove('popup__save-button_disabled')
 
+    //при открытии попапа редактирования профиля заполняет values инпутов данными из профиля
+    const profileInfo = userInfoEx.getUserInfo()
+    inputName.value = profileInfo.name
+    inputJob.value = profileInfo.about
+    
     //прослушки для закрытия попапа и сабмита формы
-    popupWithProfileForm.setEventListeners()
+    // popupWithProfileForm.setEventListeners()
 })
 
 
@@ -290,8 +280,8 @@ function handleCardClick(cardName, cardImg) {
         '.popup_type_picture-zoom',
         imgPopup
     )
-    popupWithImgEx.open()
     popupWithImgEx.setEventListeners()
+    popupWithImgEx.open()
 }
 
 
@@ -312,20 +302,25 @@ function handleDeleteIconClick(card, placeEvt) {
                     place.remove()
                     card = null
                     checkEmptyPlacesList()
+                })
+                .then(() => {
                     popupWithSubmit.close()
                 })
                 .catch((err) => {
                     console.log(err)
                 })
-                .finally(renderLoading(false, cardDeleteSubmitButton, defaultYesText))
+                .finally(() => {
+                    renderLoading(false, cardDeleteSubmitButton, defaultYesText)
+                })
         },
     })
+    popupWithSubmit.setEventListeners()
     popupWithSubmit.open()
     // сместит фокус с корзины, чтобы при сабмите она снова не сработала
     document.activeElement.blur()
     // popupCardDelete.querySelector('.popup__save-button').focus()
-    popupWithSubmit.setEventListeners()
 }
+
 
 // при клике на лайк
 function handleLikeClick(likeCardButton, card, likeCounter) {
@@ -357,18 +352,27 @@ function handleLikeClick(likeCardButton, card, likeCounter) {
 // в ответе получит созданную сервером карточку
 // и добавит ее в разметку
 function placeFormSubmitHandler() {
+    // до получения ответа от сервера покажет пользователю надпись о процессе загрузки
     renderLoading(true, placeSubmitButton, defaultCreateText)
-    serverInfo
-        .createItem(
+    // узнает у сервера мой id (использ-ся для создания карточек)
+    serverInfo.getItems('users/me')
+    .then((userData) => {
+        const myLikeId = userData._id
+        // отправит новую карточку на сервер
+        serverInfo.createItem(
             {
                 name: placeInputName.value,
                 link: placeInputPic.value,
             },
             'cards'
         )
+        // создаст ее в разметке
         .then((card) => {
-            const cardFromForm = cardCreate([card], PREPEND, MINE)
+            const cardFromForm = cardCreate([card], PREPEND, MINE, myLikeId)
             cardFromForm.renderItems()
+        })
+        .then(() => {
+            popupWithCardForm.close()
         })
         .catch((err) => {
             console.log(err)
@@ -376,6 +380,8 @@ function placeFormSubmitHandler() {
         .finally(() => {
             renderLoading(false, placeSubmitButton, defaultCreateText)
         })
+    })
+        
 }
 
 //будет валидировать форму карточки
@@ -389,10 +395,11 @@ const popupWithCardForm = new PopupWithForm(
         //если инпуты валидны, то запускает ф-цию сабмита
         if (!formCardValidator.hasInvalidInput()) {
             placeFormSubmitHandler()
-            popupWithCardForm.close()
+            
         }
     }
 )
+popupWithCardForm.setEventListeners()
 
 //при нажатии на кнопку добавления места:
 // запускает валидацию, создает экземпляр попапа с формой,
@@ -404,15 +411,14 @@ addPlaceButton.addEventListener('click', () => {
     //убирает уведомления об ошибках от предыдущих инпутов
     cleanInputErrors(popupPlace)
 
-    popupWithCardForm.open()
-
     // для попапа добавл.карточек заблокируем кнопку сабмита при открытии попапа
     popupPlace
         .querySelector('.popup__save-button')
         .classList.add('popup__save-button_disabled')
 
+    popupWithCardForm.open()
     //прослушки для закрытия попапа и сабмита формы
-    popupWithCardForm.setEventListeners()
+    // popupWithCardForm.setEventListeners()
 })
 
 // при сабмите формы смены аватара отправит картинку на сервер и заменит в разметке
@@ -424,6 +430,9 @@ function avatarFormSubmitHandler() {
             document.querySelector(
                 profileAvatarSelector
             ).style.backgroundImage = `url('${userData.avatar}')`
+        })
+        .then(() => {
+            popupWithAvatarForm.close()
         })
         .catch((err) => {
             console.log(err)
@@ -444,10 +453,10 @@ const popupWithAvatarForm = new PopupWithForm(
         //если инпуты валидны, то запускает ф-цию сабмита
         if (!formAvatarValidator.hasInvalidInput()) {
             avatarFormSubmitHandler()
-            popupWithAvatarForm.close()
         }
     }
 )
+popupWithAvatarForm.setEventListeners()
 
 // вызовет создание класса с формой для смены аватара
 editAvatarButton.addEventListener('click', () => {
@@ -457,13 +466,13 @@ editAvatarButton.addEventListener('click', () => {
     //убирает уведомления об ошибках от предыдущих инпутов
     cleanInputErrors(popupEditAvatar)
 
-    popupWithAvatarForm.open()
-
     // заблокируем кнопку сабмита при открытии попапа
     popupEditAvatar
         .querySelector('.popup__save-button')
         .classList.add('popup__save-button_disabled')
 
+    
+    popupWithAvatarForm.open()
     //прослушки для закрытия попапа и сабмита формы
-    popupWithAvatarForm.setEventListeners()
+    // popupWithAvatarForm.setEventListeners()
 })
