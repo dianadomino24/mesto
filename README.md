@@ -15,7 +15,7 @@ A single-page application that simulates a user's page with a gallery.
 
 ## :mag_right: Preview
 
-![Preview](./Example2.png)
+![Preview](./Example3.png)
 ![Preview](./Example4.png)
 
 ---
