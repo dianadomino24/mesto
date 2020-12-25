@@ -287,6 +287,7 @@ const popupWithSubmit = new PopupWithSubmit({
     popupSelector: '.popup_type_card-delete',
     // при подтверждении удаления удалить карточку с сервера и из разметки
     submitHandler: (cardItem, cardDOMElement) => {
+        // покажет лоадер пока карточка не удалится с сервера
         renderLoading(true, cardDeleteSubmitButton, defaultYesText)
         // удаляет карточку с сервера
         return serverInfo

@@ -7,10 +7,6 @@ export default class PopupWithSubmit extends Popup {
         this._formElement = this._popup.querySelector('.popup__form')
     }
 
-    // close() {
-    //     super.close()
-    //     // this._formElement.reset()
-    // }
     open(cardItem, cardDOMElement) {
         super.open()
         this._cardItem = cardItem

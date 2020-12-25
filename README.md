@@ -1,37 +1,100 @@
-# Проекты 4-9: Место
+# :large_blue_diamond: A study project Mesto at Practicum by Yandex
 
-**Общее**
+A single-page application that simulates a user's page with a gallery.
 
-В проекте реализован одностраничный сайт с попапами и адаптивными
-карточками для размещения фотографий с подписями. Заполнение формы
-в попапе изменяет информацию на основной странице. Можно сменить аватар профиля.
-Карточки можно добавить, удалить и поставить им лайк. Данные отправляются на сервер,
-другие пользователи также могут поставить лайк.
-При нажатии на изображение всплывает попап с увеличенной картинкой и ее подписью.
-Реализована валидация форм. Попап можно закрыть при клике на overlay или Esc.
+:small_blue_diamond: **App functions:** :small_blue_diamond:
 
-Использовались css, html и javascript.
+-   editing a profile info and avatar
+-   adding images to the gallery via url-links
+-   deleting images
+-   putting likes
+-   popups
+-   form validation.
 
-Выполнен рефакторинг в соответствии с Объектно Ориентированным Программированием (ООП).
-Использованы классы для реализации валидации, отправки данных на сервер,
-создания карточки места и открытия попапов, которые
-подключены через модули и имеют слабое связывание. Настроена сборка проекта с помощью Webpack.
-Настроено взаимодействие с сервером (отправка и получение данных).
+---
 
-**Figma**
+## :mag_right: Preview
 
--   [Ссылка на макет в Figma 4](https://www.figma.com/file/StZjf8HnoeLdiXS7dYrLAh/JavaScript.-Sprint-4)
+![Preview](./Example3.png)
+![Preview](./Example4.png)
 
--   [Ссылка на макет в Figma 5](https://www.figma.com/file/nlYpT4VhFiwimn2YlncrcF/JavaScript.-Sprint-5?node-id=0%3A1)
+---
 
--   [Ссылка на макет в Figma 6](https://www.figma.com/file/XNaGNEZD5NEjeyJzAT4gMb/JavaScript.-Sprint-6?node-id=0%3A1)
+**GitPages link**
 
--   [Ссылка на макет в Figma 9](https://www.figma.com/file/hhhIavVTeuilfPPZ6sbifl/JavaScript.-Sprint-9?node-id=0%3A1)
+[GitPages](https://dianadomino24.github.io/mesto/index.html)
 
-**Ссылка на GitPages**
+---
 
-[Ссылка на сайт в GitPages](https://dianadomino24.github.io/mesto/index.html)
+## :rocket: Technologies
 
+-   **JavaScript ES6** - object-oriented programming(**OOP**), fetch API(GET, PUT, DELETE, PATCH, POST methods) form validation,
+
+-   **Asynchronous functions and Promises**,
+
+-   semantic **HTML5**, styles - **CSS3** including Flexbox, Grid, adaptive layout,
+
+-   **BEM** methodology,
+
+-   **Webpack**,
+
+-   **Babel**,
+
+-   **Figma**, **Pixel perfect**,
+
+-   **Git** versions, branches.
+
+---
+
+## :arrow_down: How to install and test
+
+1. Clone the repository:
+
+```
+git clone https://github.com/dianadomino24/mesto.git
+```
+
+2. Install dependencies:
+
+```
+npm install
+```
+
+3. Development mode:
+
+```
+      npm run dev
+```
+
+---
+
+**Figma Layouts**
+
+-   [Figma 4](https://www.figma.com/file/StZjf8HnoeLdiXS7dYrLAh/JavaScript.-Sprint-4)
+
+-   [Figma 5](https://www.figma.com/file/nlYpT4VhFiwimn2YlncrcF/JavaScript.-Sprint-5?node-id=0%3A1)
+
+-   [6](https://www.figma.com/file/XNaGNEZD5NEjeyJzAT4gMb/JavaScript.-Sprint-6?node-id=0%3A1)
+
+-   [9](https://www.figma.com/file/hhhIavVTeuilfPPZ6sbifl/JavaScript.-Sprint-9?node-id=0%3A1)
+
+**Practicum by Yandex** - https://practicum.yandex.com/
+
+---
+
+## :sparkles: Thanks for watching! :sparkles:
+
+![Preview](./Example.png)
+
+<!-- **В перспективе**
+
+В перспективе необходимо доработать сайт:
+
+-   реализовать проверку валидности, используя регулярные выражения
+-   реализовать редактирование текущих карточек
+-   перетаскивание карточек мышью
+-   копирование карточек. -->
+<!--
 **Технологии**
 
 Освоены:
@@ -52,13 +115,4 @@
 -   отзывчивая (responsive), адаптивная (adaptive) и
     резиновая (liquid/fluid) верстки,
 -   flex- и grid- верстка,
--   Nested файловая структура по БЭМ.
-
-**В перспективе**
-
-В перспективе необходимо доработать сайт:
-
--   реализовать проверку валидности, используя регулярные выражения
--   реализовать редактирование текущих карточек
--   перетаскивание карточек мышью
--   копирование карточек.
+-   Nested файловая структура по БЭМ. -->
